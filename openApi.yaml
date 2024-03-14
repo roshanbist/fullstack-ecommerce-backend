@@ -1,0 +1,360 @@
+openapi: 3.0.0
+servers: 
+  - description: SwaggerHub Group 5 API
+    url: HTTP
+  - description: SwaggerHub Secure Groupd 5 API
+    url: HTTPS
+info:
+  description: An e-commerce website
+  version: “1.0.0“
+  title: e-commerce website
+  contact:
+    email: woong.shin@integrify.io
+  license: 
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+paths: 
+  /products:
+    get:
+      summary: get the list of products
+      description: get the list of products
+      responses: 
+        "200":
+          description: get the product list successfully
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+    post:
+      summary: create a new product
+      description: create a new product
+      requestBody: 
+        description: create a new product
+        content: 
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/Product"
+      responses: 
+        "201":  
+          description: create new product successfully
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Product"
+
+  /products/{productId}:
+    get:
+      summary: get the product by product id
+      description: get the product by product id
+      parameters:
+        - name: productId
+          required: true
+          in: path
+          description: id of the product
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: the product with product id
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+    put:
+      summary: update the product with product id and product properties
+      description: update the product with product id and product properties
+      parameters:
+        - name: productId
+          required: true
+          in: path
+          description: id of the product
+          schema:
+            type: integer
+      requestBody:
+        description: update the product
+        content:
+          application/json:
+            schema:  
+              $ref: "#/components/schemas/Product"
+      responses:
+        "200": 
+          description: updated the product successfully
+          content:
+            application/json:
+              schema:  
+                $ref: "#/components/schemas/Product"
+
+    delete:
+      summary: delete the product by product id
+      description: delete the product by product id
+      parameters:
+        - name: productId
+          required: true
+          in: path
+          description: id of the product
+          schema: 
+            type: integer
+      responses:
+        "204":
+          description: the product with product id is delete successfully
+
+  /categories:
+    get:
+      summary: get the list of categoy
+      description: get the list of category
+      responses: 
+        "200":
+          description: get the category list  successfully
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+    post:
+      summary: create a new cateogry
+      description: create a new category
+      requestBody: 
+        description: create a new category
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/Category"
+      responses: 
+        "201":  
+          description: create new category successfully
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Category"
+
+  /categories/{categoryId}:
+    get:
+      summary: get the category by category id
+      description: get the category by category id
+      parameters: 
+        - name: categoryId
+          required: true
+          in: path
+          description: id of the category
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: the category with category id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+    put:
+      summary: update the category with category id and category properties
+      description: update the category with category id and category properties
+      parameters: 
+        - name: categoryId
+          required: true
+          in: path
+          description: id of the category
+          schema:
+            type: integer
+      requestBody:
+        description: update the category
+        content: # only matched, ie name, image etc # 
+          application/json:
+            schema:  
+              $ref: "#/components/schemas/Category"
+      responses:
+        "200": 
+          description: updated the category successfully
+          content:
+            application/json:
+              schema:  
+                $ref: "#/components/schemas/Category"
+
+    delete:
+      summary: delete the category by category id
+      description: delete the category by category id
+      parameters:
+        - name: categoryId
+          required: true
+          in: path
+          description: id of the category
+          schema: 
+            type: integer
+      responses:
+        "204":
+          description: the category with category id is delete successfully
+
+  /users:
+    get:
+      summary: get the list of user
+      description: get the list of user
+      responses: 
+        "200":
+          description: get the user list  successfully
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+    post:
+      summary: create a new user
+      description: create a new user
+      requestBody: 
+        description: create a new user
+        content:  #name, email, password, avatart
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/User"
+      responses: 
+        "201":  
+          description: create a new user successfully
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/User"
+
+  /users/{userId}:
+    get:
+      summary: get the user by user id
+      description: get the user by user id
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          description: id of the user
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: the user with user id successfully
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+    put:
+      summary: update the user with user id and user properties
+      description: update the user with user id and user properties
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          description: id of the user
+          schema:
+            type: integer
+      requestBody:
+        description: update the user
+        content: #some part, name and email etc
+          application/json:
+            schema:  
+              $ref: "#/components/schemas/User"
+      responses:
+        "200": 
+          description: updated the user successfully
+          content:
+            application/json:
+              schema:  
+                $ref: "#/components/schemas/User"
+      
+components: 
+  schemas:
+    Product: 
+      type: object
+      properties: 
+        id:  
+          type: integer
+          example: 4
+        title: 
+          type: string
+          example: Handmade Fresh Table
+        price:  
+          type: integer
+          example: 1
+        stockQuantity:
+          type: integer
+          example: 100
+        description:  
+          type: string
+          example: "Andy shoes are designed to keeping in..."
+        images:  
+          type: array
+          items:
+            type: string
+          example: [
+            "https://placeimg.com/640/480/any?r=0.9178516507833767",
+            "https://placeimg.com/640/480/any?r=0.9300320592588625",
+            "https://placeimg.com/640/480/any?r=0.8807778235430017"
+          ]
+        category:  
+          $ref: '#/components/schemas/Category'
+
+    Category:
+      type: object
+      properties: 
+        id: 
+          type: integer
+          example: 2
+        name:
+          type: string
+          example: "Clothes"
+        image:
+          type: string
+          example: "https://api.lorem.space/image/fashion?w=640&h=480&r=4278"
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 133
+        email:
+          type: string
+          example: "john@mail.com"
+        password:
+          type: string
+          example: "password__not--real"
+        name:
+          type: string
+          example: "Jhon"
+        address:
+          type: string
+          example: "Kaivokatu 1, 00100, Helsinki, Finland"
+        role:
+          type: string
+          example: "customer"
+        avatar: 
+          type: string
+          example: "https://i.imgur.com/LDOO4Qs.jpg"
+
+    Order:
+      type: object
+      properties:
+        id: 
+          type: integer
+          example: 1
+        userId:
+          type: integer
+          example: 1
+        productIds:
+          type: array
+          items: 
+            type: integer
+            example: 10
+          example: [
+           10, 30, 40
+          ]
+        orderDate:
+          type: string
+          example: "08-03-2024 16:10"
+        totalPrice: 
+          type: integer
+          example: "473.50"
+        
+
