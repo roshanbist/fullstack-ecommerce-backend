@@ -40,15 +40,79 @@ let users: User[] = [
   },
 ];
 
+type passwordUpdte = {
+  username: string;
+  oldPassword: string;
+  newPassword: string
+}
+
 const router = express.Router();
 
-// method, endpoint, data 
-router.get("/", (request: Request, response: Response) => {
+const findUserIndex = (userId: string): number => {
+  return users.findIndex((user: User) => user.id === userId);
+}
+
+router.put("/:userId", (request: Request, response: Response) => { // update user profile
+  // Update user profile (first name, last name, email)
+  const userId: string = request.params.userId;
+  const userInfo: User = request.body;
+
+  if (userId) {
+    const matchedIndex: number = findUserIndex(userId);
+    if (matchedIndex > -1) {
+      users[matchedIndex] = {
+        ...users[matchedIndex],
+        ...userInfo
+      }
+
+      return response.status(201).json(users[matchedIndex]);
+    }
+  } 
   
+  return response.status(400).json({ message: "Not valid user"});
 });
 
-router.post("/", (request: Request, response: Response) => {
-  
+router.get("/:userId", (request: Request, response: Response) => { // forget password request
+  const userId: string = request.params.userId;
+  const newPassword: string = "0000";
+
+  if (userId) {
+    const matchedIndex: number = findUserIndex(userId);
+    if (matchedIndex > -1) {
+      const existedUser: User = users[matchedIndex];
+      existedUser.password = newPassword;
+      users[matchedIndex] = existedUser;
+
+      return response.status(200).json({ message: `Successfully reset the password, ${newPassword}. Please change the password once you login!`});
+    }
+  }
+
+  return response.status(400).json({ message: "Not valid user"});
 });
+
+router.post("/:userId", (request: Request, response: Response) => { // change password
+  // Change password (username, old password, new password)
+  const userId: string = request.params.userId;
+  const passwordInfo: passwordUpdte = request.body;
+
+  if (userId) {
+    const matchedIndex: number = findUserIndex(userId);
+    if (matchedIndex > -1) {
+      const existedUser: User = users[matchedIndex];
+      if (existedUser && existedUser.password === passwordInfo.oldPassword) {
+        existedUser.password = passwordInfo.newPassword;
+        users[matchedIndex] = existedUser;
+
+        return response.status(200).json({ message: "The password successfully changed!"});
+      } 
+      
+      return response.status(400).json({ message: "The password is wrong!"});
+    } 
+  }
+  
+  return response.status(400).json({ message: "Not valid user!"});
+});
+
+
 
 export default router;
