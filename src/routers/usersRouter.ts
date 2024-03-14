@@ -52,6 +52,10 @@ const findUserIndex = (userId: string): number => {
   return users.findIndex((user: User) => user.id === userId);
 }
 
+const findUserIndexByName = (userName: string): number => {
+  return users.findIndex((user: User) => user.name === userName);
+}
+
 router.put("/:userId", (request: Request, response: Response) => { // update user profile
   // Update user profile (first name, last name, email)
   const userId: string = request.params.userId;
@@ -72,31 +76,18 @@ router.put("/:userId", (request: Request, response: Response) => { // update use
   return response.status(400).json({ message: "Not valid user"});
 });
 
-router.get("/:userId", (request: Request, response: Response) => { // forget password request
-  const userId: string = request.params.userId;
-  const newPassword: string = "0000";
-
-  if (userId) {
-    const matchedIndex: number = findUserIndex(userId);
-    if (matchedIndex > -1) {
-      const existedUser: User = users[matchedIndex];
-      existedUser.password = newPassword;
-      users[matchedIndex] = existedUser;
-
-      return response.status(200).json({ message: `Successfully reset the password, ${newPassword}. Please change the password once you login!`});
-    }
-  }
-
-  return response.status(400).json({ message: "Not valid user"});
+router.get("/forgetPassword", (request: Request, response: Response) => { // forget password request
+  // Our senario is redirecting to /changePasswordForm to get passwordInfo in frontend 
+  // But for now we will leave it as it is
+  console.log("forgetPassword");
+  return response.redirect("/"); // TODO should be fixed later or some other way
 });
 
-router.post("/:userId", (request: Request, response: Response) => { // change password
-  // Change password (username, old password, new password)
-  const userId: string = request.params.userId;
+router.post("/changePassword", (request: Request, response: Response) => { // change password
   const passwordInfo: passwordUpdte = request.body;
 
-  if (userId) {
-    const matchedIndex: number = findUserIndex(userId);
+  if (passwordInfo) {
+    const matchedIndex: number = findUserIndexByName(passwordInfo.username);
     if (matchedIndex > -1) {
       const existedUser: User = users[matchedIndex];
       if (existedUser && existedUser.password === passwordInfo.oldPassword) {
@@ -110,7 +101,7 @@ router.post("/:userId", (request: Request, response: Response) => { // change pa
     } 
   }
   
-  return response.status(400).json({ message: "Not valid user!"});
+  return response.status(400).json({ message: "Not valid ino provided!"});
 });
 
 
