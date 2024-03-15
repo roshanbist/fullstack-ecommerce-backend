@@ -1,61 +1,41 @@
 import express, { Request, Response } from 'express';
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-  role: 'customer' | 'admin';
-  avatar: string;
-  address: string;
-};
-
-type ResetPasswordInfo = {
-  userEmail: string;
-}
-
-type passwordUpdte = {
-  username: string;
-  oldPassword: string;
-  newPassword: string
-}
+import { User } from '../misc/types/User';
+import { PasswordReset, PasswordUpdte } from '../misc/types/Password';
 
 let users: User[] = [
   {
-    id: "1",
-    name: "Ganesh",
-    email: "user1@mail.com",
-    password: "user1pasword",
-    role: "admin",
-    avatar: "user1Avatar",
-    address: "user1Address",
+    ID: "0",
+    firstName: "Ganesh",
+    lastName: "Poudel",
+    email: "ganesh@mail.com",
+    userName: "Ganesh",
+    password: "GaneshPassword"
   },
   {
-    id: "2",
-    name: "Rohan",
-    email: "user2@mail.com",
-    password: "user2pasword",
-    role: "admin",
-    avatar: "user2Avatar",
-    address: "user2Address",
+    ID: "1",
+    firstName: "Roshan",
+    lastName: "Bist",
+    email: "roshan@mail.com",
+    userName: "Roshan",
+    password: "RoshanPassword"
   },
   {
-    id: "3",
-    name: "Woong",
-    email: "user3@mail.com",
-    password: "user3pasword",
-    role: "admin",
-    avatar: "user3Avatar",
-    address: "user3Address",
+    ID: "2",
+    firstName: "Woong",
+    lastName: "Shin",
+    email: "woong@mail.com",
+    userName: "Woong",
+    password: "WoongPassword"
   },
 ];
 
 const findUserIndex = (userId: string): number => {
-  return users.findIndex((user: User) => user.id === userId);
+  return users.findIndex((user: User) => user.ID === userId);
 }
 
 const findUserIndexByName = (userName: string): number => {
-  return users.findIndex((user: User) => user.name === userName);
+  return users.findIndex((user: User) => user.userName === userName);
 }
 
 const router = express.Router();
@@ -70,8 +50,8 @@ router.get("/", (request: Request, response: Response) => {
 // Get single user
 router.get("/:userId", (request: Request, response: Response) => {
   const userId = request.params.userId;
-  const user = users.find((user) => {
-    return user.id === userId;
+  const user = users.find((user: User) => {
+    return user.ID === userId;
   });
   response.status(200).json(user);
 });
@@ -81,8 +61,7 @@ router.get("/:userId", (request: Request, response: Response) => {
 router.post("/", (request: Request, response: Response) => {
   const newUser: User = request.body;
   if (newUser) {
-    newUser.role = "customer";
-    newUser.id = `${users.length + 1}`;
+    newUser.ID = `${users.length}`;
     users.push(newUser);
   }
   
@@ -94,7 +73,7 @@ router.post("/", (request: Request, response: Response) => {
 router.delete("/:userId", (request: Request, response: Response) => {
   const userId = request.params.userId;
   users = users.filter((item) => {
-    return item.id !== userId;
+    return item.ID !== userId;
   });
   response.sendStatus(204);
 });
@@ -114,18 +93,16 @@ router.post("/is-available", (request: Request, response: Response) => {
 // #Woong
 // Update user profile
 router.put("/:userId", (request: Request, response: Response) => { 
-  // Update user profile (first name, last name, email)
   const userId: string = request.params.userId;
   const userInfo: User = request.body;
 
   if (userId) {
     const matchedIndex: number = findUserIndex(userId);
     if (matchedIndex > -1) {
-      users[matchedIndex] = {
-        ...users[matchedIndex],
-        ...userInfo
-      }
-
+      users[matchedIndex].email = userInfo.email;
+      users[matchedIndex].firstName = userInfo.firstName;
+      users[matchedIndex].lastName = userInfo.lastName;
+      
       return response.status(201).json(users[matchedIndex]);
     }
   } 
@@ -136,7 +113,7 @@ router.put("/:userId", (request: Request, response: Response) => {
 // #Woong
 // Forget password request
 router.post("/forgetPassword", (request: Request, response: Response) => { 
-  const resetPasswordInfo: ResetPasswordInfo = request.body;
+  const resetPasswordInfo: PasswordReset = request.body;
   if (resetPasswordInfo) {
     const matchedUser: User | undefined = users.find((user: User) => user.email === resetPasswordInfo.userEmail);
     if (matchedUser) {
@@ -153,24 +130,24 @@ router.post("/forgetPassword", (request: Request, response: Response) => {
 // #Woong
 // Change password
 router.post("/changePassword", (request: Request, response: Response) => { 
-  const passwordInfo: passwordUpdte = request.body;
+  const passwordInfo: PasswordUpdte = request.body;
 
   if (passwordInfo) {
-    const matchedIndex: number = findUserIndexByName(passwordInfo.username);
+    const matchedIndex: number = findUserIndexByName(passwordInfo.userName);
     if (matchedIndex > -1) {
       const existedUser: User = users[matchedIndex];
       if (existedUser && existedUser.password === passwordInfo.oldPassword) {
         existedUser.password = passwordInfo.newPassword;
         users[matchedIndex] = existedUser;
 
-        return response.status(200).json({ message: "The password successfully changed!"});
+        return response.status(200).json({ message: "The password successfully changed!" });
       } 
       
-      return response.status(404).json({ message: "The password is wrong!"});
+      return response.status(404).json({ message: "The password is wrong!" });
     } 
   }
   
-  return response.status(400).json({ message: "Not valid ino provided!"});
+  return response.status(400).json({ message: "Not valid ino provided!" });
 });
 
 export default router;

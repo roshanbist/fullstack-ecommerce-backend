@@ -1,42 +1,33 @@
 import express, { Request, Response } from 'express';
+import { Product } from '../misc/types/Product';
 
-type Product = {
-  id: string;
-  title: string;
-  price: number;
-  description: string;
-  images: string[];
-  stockQuantity: number;
-  categoryId: number;
-};
+import { Variant } from '../misc/types/Variant';
+import { Size } from '../misc/types/Size';
 
 let products: Product[] = [
   {
-    id: '1',
-    title: 'Product 1',
-    price: 1,
+    ID: '0',
+    name: 'Product 0',
+    description: 'Description 0',
+    categories: [{ name: "T-shirts" }],
+    variants: [Variant.Blue, Variant.Dark],
+    sizes: [Size.L, Size.M]
+  },
+  {
+    ID: '1',
+    name: 'Product 1',
     description: 'Description 1',
-    images: ['product1 image'],
-    stockQuantity: 100,
-    categoryId: 1,
+    categories: [{ name: "Pants" }],
+    variants: [Variant.Red, Variant.Yellow],
+    sizes: [Size.M]
   },
   {
-    id: '2',
-    title: 'Product 2',
-    price: 2,
+    ID: '2',
+    name: 'Product 2',
     description: 'Description 2',
-    images: ['product2 image'],
-    stockQuantity: 30,
-    categoryId: 2,
-  },
-  {
-    id: '3',
-    title: 'Product 3',
-    price: 3,
-    description: 'Description 3',
-    images: ['product3 image'],
-    stockQuantity: 10,
-    categoryId: 3,
+    categories: [{ name: "SportsWear" }],
+    variants: [Variant.Dark, Variant.White],
+    sizes: [Size.XL, Size.XS]
   },
 ];
 
@@ -50,7 +41,7 @@ router.get('/', (request: Request, response: Response) => {
   try {
     if (titleQuery) {
       const matchedProducts = products.filter((product) =>
-        product.title.toLowerCase().includes(titleQuery.toLowerCase())
+        product.name.toLowerCase().includes(titleQuery.toLowerCase())
       );
 
       if (matchedProducts.length > 0) {
@@ -74,7 +65,7 @@ router.get('/:productId', (request: Request, response: Response) => {
 
   try {
     const singleProductData = products.find(
-      (product) => product.id === productId
+      (product) => product.ID === productId
     );
 
     if (!singleProductData) {
@@ -94,7 +85,7 @@ router.delete('/:productId', (request: Request, response: Response) => {
   const productId = request.params.productId;
 
   try {
-    products = products.filter((product) => product.id !== productId);
+    products = products.filter((product) => product.ID !== productId);
     response.sendStatus(204);
   } catch (error) {
     console.error('Error finding product', error);
