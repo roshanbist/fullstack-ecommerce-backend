@@ -42,32 +42,61 @@ let products: Product[] = [
 
 const router = express.Router();
 
-// method, endpoint, data 
-router.get("/", (request: Request, response: Response) => {
-  let matchedProducts: Product[] = products;
-  // Query
-  const nameQuery = request.query.title as string;
-  if (nameQuery) {
-    matchedProducts = matchedProducts.filter((product: Product) => 
-      product.title.toLowerCase().includes(nameQuery.toLowerCase()));
+// handle GET request and filtering of products
+router.get('/', (request: Request, response: Response) => {
+  const titleQuery = request.query.title as string;
+
+  try {
+    if (titleQuery) {
+      const matchedProducts = products.filter((product) =>
+        product.title.toLowerCase().includes(titleQuery.toLowerCase())
+      );
+
+      if (matchedProducts.length > 0) {
+        response.status(200).json(matchedProducts);
+      } else {
+        response.status(404).json({ message: 'No match found' });
+      }
+    } else {
+      response.status(200).json(products);
+    }
+  } catch (error) {
+    console.error('Error finding product', error);
+    response.status(500).json({ message: 'Server error' });
   }
-  
-  response.status(200).json(matchedProducts);
 });
 
-router.post("/", (request: Request, response: Response) => {
-  const newProduct = request.body;
-  products.push(newProduct);
-
-  response.status(200).json(products);
-});
-
-router.delete("/:productId", (request: Request, response: Response) => {
+// handle GET product by id
+router.get('/:productId', (request: Request, response: Response) => {
   const productId = request.params.productId;
-  products = products.filter((product: Product) => { product.id !== productId});
-  
-  response.sendStatus(204); // with no content, use sendStatus
-  // response.status(200).json({ message: "delete item successfully" }); // Or send some message 
+
+  try {
+    const singleProductData = products.find(
+      (product) => product.id === productId
+    );
+
+    if (!singleProductData) {
+      response.status(404).json({ message: 'Product not found' });
+    }
+
+    response.status(200).json(singleProductData);
+  } catch (error) {
+    console.error('Error finding product', error);
+    response.status(500).json({ message: 'Server error' });
+  }
+});
+
+// handle DELETE product by id
+router.delete('/:productId', (request: Request, response: Response) => {
+  const productId = request.params.productId;
+
+  try {
+    products = products.filter((product) => product.id !== productId);
+    response.sendStatus(204);
+  } catch (error) {
+    console.error('Error finding product', error);
+    response.status(500).json({ message: 'Server error' });
+  }
 });
 
 export default router;
