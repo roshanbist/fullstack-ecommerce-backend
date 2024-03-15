@@ -10,9 +10,9 @@ type User = {
   address: string;
 };
 
-type Email = {
-  email: string;
-};
+type ResetPasswordInfo = {
+  userEmail: string;
+}
 
 type passwordUpdte = {
   username: string;
@@ -50,7 +50,6 @@ let users: User[] = [
   },
 ];
 
-
 const findUserIndex = (userId: string): number => {
   return users.findIndex((user: User) => user.id === userId);
 }
@@ -59,16 +58,16 @@ const findUserIndexByName = (userName: string): number => {
   return users.findIndex((user: User) => user.name === userName);
 }
 
-const PORT = 8080;
-
 const router = express.Router();
 
+// #Ganesh
 // Get all users
-router.get("", (request: Request, response: Response) => {
+router.get("/", (request: Request, response: Response) => {
   response.status(200).json(users);
 });
 
-// get single user
+// #Ganesh
+// Get single user
 router.get("/:userId", (request: Request, response: Response) => {
   const userId = request.params.userId;
   const user = users.find((user) => {
@@ -77,14 +76,20 @@ router.get("/:userId", (request: Request, response: Response) => {
   response.status(200).json(user);
 });
 
-// create a new user
-router.post("", (request: Request, response: Response) => {
-  const newUser = request.body;
-  console.log(newUser);
-  users.push(newUser);
+// #Ganesh
+// Create a new user
+router.post("/", (request: Request, response: Response) => {
+  const newUser: User = request.body;
+  if (newUser) {
+    newUser.role = "customer";
+    newUser.id = `${users.length + 1}`;
+    users.push(newUser);
+  }
+  
   response.status(201).json(newUser);
 });
 
+// #Ganesh
 // Delete user
 router.delete("/:userId", (request: Request, response: Response) => {
   const userId = request.params.userId;
@@ -92,10 +97,10 @@ router.delete("/:userId", (request: Request, response: Response) => {
     return item.id !== userId;
   });
   response.sendStatus(204);
-  console.log(users);
 });
 
-// check the mail
+// #Ganesh
+// Check the mail
 router.post("/is-available", (request: Request, response: Response) => {
   const emailParams = request.body.email;
   console.log("email ", emailParams);
@@ -106,6 +111,7 @@ router.post("/is-available", (request: Request, response: Response) => {
   response.status(200).json({ isAvailiable: !isAvailiable });
 });
 
+// #Woong
 // Update user profile
 router.put("/:userId", (request: Request, response: Response) => { 
   // Update user profile (first name, last name, email)
@@ -124,17 +130,27 @@ router.put("/:userId", (request: Request, response: Response) => {
     }
   } 
   
-  return response.status(400).json({ message: "Not valid user"});
+  return response.status(404).json({ message: "Not valid user"});
 });
 
+// #Woong
 // Forget password request
-router.get("/forgetPassword", (request: Request, response: Response) => { 
-  // Our senario is redirecting to /changePasswordForm to get passwordInfo in frontend 
-  // But for now we will leave it as it is
-  console.log("forgetPassword");
-  return response.redirect("/"); // TODO should be fixed later or some other way
+router.post("/forgetPassword", (request: Request, response: Response) => { 
+  const resetPasswordInfo: ResetPasswordInfo = request.body;
+  if (resetPasswordInfo) {
+    const matchedUser: User | undefined = users.find((user: User) => user.email === resetPasswordInfo.userEmail);
+    if (matchedUser) {
+      matchedUser.password = "0000";
+      return response.status(200).json({ message: "Reset password successfully"});
+    }
+
+    return response.status(404).json({ message: "User is not exsited! Check the user email again!" })
+  }
+
+  return response.status(400).json({ message: "Password infomation is not valid"})
 });
 
+// #Woong
 // Change password
 router.post("/changePassword", (request: Request, response: Response) => { 
   const passwordInfo: passwordUpdte = request.body;
@@ -150,7 +166,7 @@ router.post("/changePassword", (request: Request, response: Response) => {
         return response.status(200).json({ message: "The password successfully changed!"});
       } 
       
-      return response.status(400).json({ message: "The password is wrong!"});
+      return response.status(404).json({ message: "The password is wrong!"});
     } 
   }
   

@@ -42,6 +42,7 @@ let products: Product[] = [
 
 const router = express.Router();
 
+// #Roshan
 // handle GET request and filtering of products
 router.get('/', (request: Request, response: Response) => {
   const titleQuery = request.query.title as string;
@@ -66,6 +67,7 @@ router.get('/', (request: Request, response: Response) => {
   }
 });
 
+// #Roshan
 // handle GET product by id
 router.get('/:productId', (request: Request, response: Response) => {
   const productId = request.params.productId;
@@ -86,6 +88,7 @@ router.get('/:productId', (request: Request, response: Response) => {
   }
 });
 
+// #Roshan
 // handle DELETE product by id
 router.delete('/:productId', (request: Request, response: Response) => {
   const productId = request.params.productId;
