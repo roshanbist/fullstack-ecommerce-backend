@@ -19,5 +19,5 @@ app.use('/api/v1/categories', categoriesRouter);
 app.use('/api/v1/admin', adminRouter);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`server running at... http://localhost:${PORT}`);
 });
