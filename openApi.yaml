@@ -1,13 +1,13 @@
 openapi: 3.0.0
 servers: 
-  - description: SwaggerHub Group 5 API
+  - description: SwaggerHub Group 5 Backend API
     url: HTTP
-  - description: SwaggerHub Secure Groupd 5 API
+  - description: SwaggerHub Secure Groupd 5 Backend API
     url: HTTPS
 info:
-  description: An e-commerce website
+  description: Backend API
   version: “1.0.0“
-  title: e-commerce website
+  title: Backend API
   contact:
     email: woong.shin@integrify.io
   license: 
@@ -29,23 +29,6 @@ paths:
                 items:
                   $ref: "#/components/schemas/Product"
 
-    post:
-      summary: create a new product
-      description: create a new product
-      requestBody: 
-        description: create a new product
-        content: 
-          application/json:
-            schema: 
-              $ref: "#/components/schemas/Product"
-      responses: 
-        "201":  
-          description: create new product successfully
-          content: 
-            application/json:
-              schema: 
-                $ref: "#/components/schemas/Product"
-
   /products/{productId}:
     get:
       summary: get the product by product id
@@ -56,37 +39,13 @@ paths:
           in: path
           description: id of the product
           schema:
-            type: integer
+            type: string
       responses:
         "200":
           description: the product with product id
           content: 
             application/json:
               schema:
-                $ref: "#/components/schemas/Product"
-
-    put:
-      summary: update the product with product id and product properties
-      description: update the product with product id and product properties
-      parameters:
-        - name: productId
-          required: true
-          in: path
-          description: id of the product
-          schema:
-            type: integer
-      requestBody:
-        description: update the product
-        content:
-          application/json:
-            schema:  
-              $ref: "#/components/schemas/Product"
-      responses:
-        "200": 
-          description: updated the product successfully
-          content:
-            application/json:
-              schema:  
                 $ref: "#/components/schemas/Product"
 
     delete:
@@ -98,96 +57,10 @@ paths:
           in: path
           description: id of the product
           schema: 
-            type: integer
+            type: string
       responses:
         "204":
-          description: the product with product id is delete successfully
-
-  /categories:
-    get:
-      summary: get the list of categoy
-      description: get the list of category
-      responses: 
-        "200":
-          description: get the category list  successfully
-          content: 
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Category"
-    post:
-      summary: create a new cateogry
-      description: create a new category
-      requestBody: 
-        description: create a new category
-        content:
-          application/json:
-            schema: 
-              $ref: "#/components/schemas/Category"
-      responses: 
-        "201":  
-          description: create new category successfully
-          content: 
-            application/json:
-              schema: 
-                $ref: "#/components/schemas/Category"
-
-  /categories/{categoryId}:
-    get:
-      summary: get the category by category id
-      description: get the category by category id
-      parameters: 
-        - name: categoryId
-          required: true
-          in: path
-          description: id of the category
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: the category with category id
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Category"
-    put:
-      summary: update the category with category id and category properties
-      description: update the category with category id and category properties
-      parameters: 
-        - name: categoryId
-          required: true
-          in: path
-          description: id of the category
-          schema:
-            type: integer
-      requestBody:
-        description: update the category
-        content: # only matched, ie name, image etc # 
-          application/json:
-            schema:  
-              $ref: "#/components/schemas/Category"
-      responses:
-        "200": 
-          description: updated the category successfully
-          content:
-            application/json:
-              schema:  
-                $ref: "#/components/schemas/Category"
-
-    delete:
-      summary: delete the category by category id
-      description: delete the category by category id
-      parameters:
-        - name: categoryId
-          required: true
-          in: path
-          description: id of the category
-          schema: 
-            type: integer
-      responses:
-        "204":
-          description: the category with category id is delete successfully
+          description: the product with product id is deleted successfully
 
   /users:
     get:
@@ -208,7 +81,7 @@ paths:
       description: create a new user
       requestBody: 
         description: create a new user
-        content:  #name, email, password, avatart
+        content:
           application/json:
             schema: 
               $ref: "#/components/schemas/User"
@@ -230,7 +103,7 @@ paths:
           in: path
           description: id of the user
           schema:
-            type: integer
+            type: string
       responses:
         "200":
           description: the user with user id successfully
@@ -248,10 +121,10 @@ paths:
           in: path
           description: id of the user
           schema:
-            type: integer
+            type: string
       requestBody:
         description: update the user
-        content: #some part, name and email etc
+        content:
           application/json:
             schema:  
               $ref: "#/components/schemas/User"
@@ -262,99 +135,139 @@ paths:
             application/json:
               schema:  
                 $ref: "#/components/schemas/User"
+
+    delete:
+      summary: delete the user with user id 
+      description: update the user with user id
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          description: id of the user
+          schema:
+            type: string
+      responses:
+        "204": 
+          description: deleted the user successfully              
       
+  /users/forgetPassword:
+    post:
+      summary: send forget password request with user email
+      description: send forget password request with user email
+      requestBody:
+        description: request forget password
+        content:
+          application/json:
+            schema:  
+              $ref: "#/components/schemas/PasswordReset"
+      responses:
+        "200": 
+          description: reset password successfully
+          content: 
+            application/json:
+              schema:
+                type: string
+                example: Reset password successfully
+
+  /users/changePassword:
+    post:
+      summary: send change password request with userName, oldPassword, newPassword
+      description: send change password request with userName, oldPassword, newPassword
+      requestBody:
+        description: request change password
+        content:
+          application/json:
+            schema:  
+              $ref: "#/components/schemas/PasswordUpdate"
+      responses:
+        "200": 
+          description: change password successfully
+          content: 
+            application/json:
+              schema:
+                type: string
+                example: Change password successfully
+
 components: 
   schemas:
     Product: 
       type: object
       properties: 
-        id:  
-          type: integer
+        ID:  
+          type: string
           example: 4
-        title: 
+        name: 
           type: string
           example: Handmade Fresh Table
-        price:  
-          type: integer
-          example: 1
-        stockQuantity:
-          type: integer
-          example: 100
         description:  
           type: string
           example: "Andy shoes are designed to keeping in..."
-        images:  
+        categories:
           type: array
           items:
-            type: string
-          example: [
-            "https://placeimg.com/640/480/any?r=0.9178516507833767",
-            "https://placeimg.com/640/480/any?r=0.9300320592588625",
-            "https://placeimg.com/640/480/any?r=0.8807778235430017"
-          ]
-        category:  
-          $ref: '#/components/schemas/Category'
+            $ref: '#/components/schemas/Category'
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Variant'
+        sizes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Size'
 
     Category:
-      type: object
-      properties: 
-        id: 
-          type: integer
-          example: 2
+      type: object  
+      properties:
         name:
           type: string
-          example: "Clothes"
-        image:
-          type: string
-          example: "https://api.lorem.space/image/fashion?w=640&h=480&r=4278"
+          example: T-shirt
 
+    Variant:
+      type: string
+      example: Red
+    
+    Size:
+      type: string
+      example: XL
+    
     User:
       type: object
       properties:
-        id:
-          type: integer
+        ID:
+          type: string
           example: 133
+        firstName:
+          type: string
+          example: "Jhon"
+        lastName:
+          type: string
+          example: "Doe"
         email:
           type: string
           example: "john@mail.com"
+        userName:
+          type: string
+          example: "Jhon"
         password:
           type: string
           example: "password__not--real"
-        name:
-          type: string
-          example: "Jhon"
-        address:
-          type: string
-          example: "Kaivokatu 1, 00100, Helsinki, Finland"
-        role:
-          type: string
-          example: "customer"
-        avatar: 
-          type: string
-          example: "https://i.imgur.com/LDOO4Qs.jpg"
 
-    Order:
+    PasswordReset:
       type: object
       properties:
-        id: 
-          type: integer
-          example: 1
-        userId:
-          type: integer
-          example: 1
-        productIds:
-          type: array
-          items: 
-            type: integer
-            example: 10
-          example: [
-           10, 30, 40
-          ]
-        orderDate:
+        userEmail: 
           type: string
-          example: "08-03-2024 16:10"
-        totalPrice: 
-          type: integer
-          example: "473.50"
-        
-
+          example: user@mail.com
+    
+    PasswordUpdate:
+      type: object
+      properties:
+        userName:
+          type: string
+          example: userName
+        oldPassword:
+          type: string
+          example: oldPassword
+        newPassword:
+          type: string
+          example: newPassword

@@ -103,7 +103,7 @@ router.put("/:userId", (request: Request, response: Response) => {
       users[matchedIndex].firstName = userInfo.firstName;
       users[matchedIndex].lastName = userInfo.lastName;
       
-      return response.status(201).json(users[matchedIndex]);
+      return response.status(200).json(users[matchedIndex]);
     }
   } 
   
