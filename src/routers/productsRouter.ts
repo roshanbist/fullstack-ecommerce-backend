@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
-import { Product } from '../misc/types/Product';
 
+import { Product } from '../misc/types/Product';
 import { Variant } from '../misc/types/Variant';
 import { Size } from '../misc/types/Size';
 
