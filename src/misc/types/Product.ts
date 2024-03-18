@@ -6,7 +6,7 @@ export type Product = {
   id: string;
   name: string;
   description: string;
-  category: Category[];
+  categories: Category[]; // Or number[] as category ids
   variants: Variant[];
   sizes: Size[];
 };
