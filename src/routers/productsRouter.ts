@@ -66,7 +66,7 @@ router.get('/:productId', (request: Request, response: Response) => {
 
   try {
     const singleProductData = products.find(
-      (product) => product.ID === productId
+      (product) => product.id === productId
     );
 
     if (!singleProductData) {
@@ -86,7 +86,7 @@ router.delete('/:productId', (request: Request, response: Response) => {
   const productId = request.params.productId;
 
   try {
-    products = products.filter((product) => product.ID !== productId);
+    products = products.filter((product) => product.id !== productId);
     response.sendStatus(204);
   } catch (error) {
     console.error('Error finding product', error);
