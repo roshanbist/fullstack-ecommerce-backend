@@ -1,12 +1,12 @@
-import { Category } from "./Category";
-import { Size } from "./Size";
-import { Variant } from "./Variant";
+import { Category } from './Category';
+import { Size } from './Size';
+import { Variant } from './Variant';
 
 export type Product = {
-  ID: string;
+  id: string;
   name: string;
   description: string;
-  categories: Category[];
+  category: Category[];
   variants: Variant[];
   sizes: Size[];
 };
