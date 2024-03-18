@@ -6,28 +6,28 @@ import { Size } from '../misc/types/Size';
 
 let products: Product[] = [
   {
-    ID: '0',
-    name: 'Product 0',
-    description: 'Description 0',
-    categories: [{ name: "T-shirts" }],
-    variants: [Variant.Blue, Variant.Dark],
-    sizes: [Size.L, Size.M]
-  },
-  {
-    ID: '1',
+    id: '1',
     name: 'Product 1',
     description: 'Description 1',
-    categories: [{ name: "Pants" }],
-    variants: [Variant.Red, Variant.Yellow],
-    sizes: [Size.M]
+    category: [{ name: 'T-shirts' }],
+    variants: [Variant.Blue, Variant.Dark],
+    sizes: [Size.L, Size.M],
   },
   {
-    ID: '2',
+    id: '2',
     name: 'Product 2',
     description: 'Description 2',
-    categories: [{ name: "SportsWear" }],
+    category: [{ name: 'Pants' }],
+    variants: [Variant.Red, Variant.Yellow],
+    sizes: [Size.M],
+  },
+  {
+    id: '3',
+    name: 'Product 3',
+    description: 'Description 3',
+    category: [{ name: 'SportsWear' }],
     variants: [Variant.Dark, Variant.White],
-    sizes: [Size.XL, Size.XS]
+    sizes: [Size.XL, Size.XS],
   },
 ];
 
@@ -36,12 +36,13 @@ const router = express.Router();
 // #Roshan
 // handle GET request and filtering of products
 router.get('/', (request: Request, response: Response) => {
-  const titleQuery = request.query.title as string;
+  const nameQuery = request.query.name as string;
+  const categoryQuery = request.query.categoryName as string;
 
   try {
-    if (titleQuery) {
+    if (nameQuery) {
       const matchedProducts = products.filter((product) =>
-        product.name.toLowerCase().includes(titleQuery.toLowerCase())
+        product.name.toLowerCase().includes(nameQuery.toLowerCase())
       );
 
       if (matchedProducts.length > 0) {
