@@ -7,8 +7,7 @@ const getAllCategories = async (): Promise<CategoryDocument[]> => {
   // {regex: search query}
 };
 
-const createCategory = async (
-  category: CategoryDocument
+const createCategory = async (category: CategoryDocument
 ): Promise<CategoryDocument> => {
   // save
   // 1. create new category
