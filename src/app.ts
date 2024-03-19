@@ -6,8 +6,8 @@ import usersRouter from './routers/usersRouter';
 import categoriesRouter from './routers/categoriesRouter';
 import adminRouter from './routers/adminRouter';
 
-const app = express(); // Create a server with express
-app.use(express.json()); // Return as json
+const app = express();
+app.use(express.json());
 
 dotenv.config({ path: '.env' });
 

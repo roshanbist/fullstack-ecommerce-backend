@@ -8,7 +8,8 @@ import {
   forgetPassword, 
   getSingleUser, 
   getUsers, 
-  updateUser } from '../controllers/usersController';
+  updateUser 
+} from '../controllers/usersController';
 
 const router = express.Router();
 
