@@ -12,7 +12,7 @@ const port = process.env.PORT as string;
 
 mongoose
   .connect(mongodbUrl, {
-    dbName: "sample_mflix",
+    dbName: "fs17",
   })
   .then(() => {
     // logic

@@ -3,3 +3,7 @@ export type User = {
   email: string;
   password: string;
 };
+
+export type Category = {
+  name: string;
+};
