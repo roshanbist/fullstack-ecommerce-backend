@@ -9,8 +9,7 @@ const getCategoryById = async (id: string): Promise<CategoryDocument | null> => 
 }
 
 const createCategory = async (category: CategoryDocument): Promise<CategoryDocument> => {
-  return await CategoryModel.create(category);
-  // return category.save();
+  return await category.save();
 }
  
 const updateCategory = async (id: string, newData: Partial<CategoryDocument>): Promise<CategoryDocument | null> => {
