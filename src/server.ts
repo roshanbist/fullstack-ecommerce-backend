@@ -6,7 +6,9 @@ const mongodb_url = process.env.MONGODB_URL as string;
 const PORT = process.env.PORT as string;
 
 mongoose
-  .connect(mongodb_url)
+  .connect(mongodb_url, {
+    dbName: 'Cluster0'
+  })
   .then(() => {
     app.listen(PORT, () => {
       console.log('MongoDB connected');
