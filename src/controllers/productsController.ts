@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
+
 import productsService from '../services/productsService';
-import Product from '../model/ProductModel';
+import Product, { ProductDocument } from '../model/ProductModel';
 
 // #Roshan
 // Get all the products list
@@ -18,6 +19,19 @@ export async function createNewProduct(request: Request, response: Response) {
 }
 
 // #Roshan
+// Update product
+export async function updateProduct(request: Request, response: Response) {
+  const newData: Partial<ProductDocument> = request.body;
+  const updatedProduct = await productsService.updateProduct(
+    request.params.productId,
+    newData
+  );
+
+  response.status(200).json(updatedProduct);
+}
+
+// #Roshan
+// Get product by Id
 export async function getProductById(request: Request, response: Response) {
   const productId = request.params.productId;
 
@@ -26,6 +40,7 @@ export async function getProductById(request: Request, response: Response) {
 }
 
 // #Roshan
+// Delete product by Id
 export async function deleteProductById(request: Request, response: Response) {
   const productId = request.params.productId;
   await productsService.deleteProductById(productId);

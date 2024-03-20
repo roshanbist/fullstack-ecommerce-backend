@@ -1,7 +1,7 @@
 export enum Variant {
-  Dark,
-  Red,
-  Yellow,
-  Blue,
-  White
+  Dark = 'Dark',
+  Red = 'Red',
+  Yellow = 'Yellow',
+  Blue = 'Blue',
+  White = 'White',
 }

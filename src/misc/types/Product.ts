@@ -1,6 +1,6 @@
 import { Category } from './Category';
 import { Size } from './Size';
-// import { Variant } from './Variant';
+import { Variant } from './Variant';
 
 export type Product = {
   id: string;
@@ -8,7 +8,7 @@ export type Product = {
   description: string;
   price: number;
   images: string[];
-  categories: Category[]; // Or number[] as category ids
-  // variants: Variant[];
+  category: Category;
+  variants: Variant[];
   size: Size[];
 };

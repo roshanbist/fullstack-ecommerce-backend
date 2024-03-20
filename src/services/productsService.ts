@@ -10,6 +10,19 @@ const createNewProduct = async (
   return await product.save();
 };
 
+const updateProduct = async (
+  id: string,
+  updatedProduct: Partial<ProductDocument>
+) => {
+  const updatedProductInfo = await Product.findByIdAndUpdate(
+    id,
+    updatedProduct,
+    { new: true }
+  );
+
+  return updatedProductInfo;
+};
+
 const getProductById = async (
   id: string
 ): Promise<ProductDocument | undefined> => {
@@ -31,6 +44,7 @@ const deleteProductById = async (id: string) => {
 export default {
   getAllProducts,
   createNewProduct,
+  updateProduct,
   getProductById,
   deleteProductById,
 };
