@@ -1,6 +1,6 @@
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document } from 'mongoose';
 
-import { Category } from "../misc/types/Category";
+import { Category } from '../misc/types/Category';
 
 export type CategoryDocument = Document & Category;
 
@@ -8,20 +8,25 @@ export const CategorySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    default: 'Deafult Category'
+    default: 'Deafult Category',
+    unique: true,
   },
-  price: {
-    type: Number,
-    default: 10
-  },
+  // price: {
+  //   type: Number,
+  //   default: 10,
+  // },
   isValid: {
     type: Boolean,
-    default: true
+    default: true,
+  },
+  image: {
+    type: String,
+    required: true,
   },
   createdAt: {
     type: Date,
-    default: Date.now()
-  }
+    default: Date.now(),
+  },
 });
 
-export default mongoose.model<CategoryDocument>("Category", CategorySchema);
+export default mongoose.model<CategoryDocument>('Category', CategorySchema);
