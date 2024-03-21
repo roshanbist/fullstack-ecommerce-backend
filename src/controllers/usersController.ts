@@ -1,43 +1,49 @@
 import { Request, Response } from 'express';
 
-import { User } from '../misc/types/User';
+import { User, UserRole } from '../misc/types/User';
 import { PasswordReset, PasswordUpdte } from '../misc/types/Password';
 
 // DB
 let users: User[] = [
   {
-    id: "0",
-    firstName: "Ganesh",
-    lastName: "Poudel",
-    email: "ganesh@mail.com",
-    userName: "Ganesh",
-    password: "GaneshPassword"
+    id: '0',
+    firstName: 'Ganesh',
+    lastName: 'Poudel',
+    email: 'ganesh@mail.com',
+    userName: 'Ganesh',
+    password: 'GaneshPassword',
+    role: UserRole.Customer,
+    avatar: 'avatar1',
   },
   {
-    id: "1",
-    firstName: "Roshan",
-    lastName: "Bist",
-    email: "roshan@mail.com",
-    userName: "Roshan",
-    password: "RoshanPassword"
+    id: '1',
+    firstName: 'Roshan',
+    lastName: 'Bist',
+    email: 'roshan@mail.com',
+    userName: 'Roshan',
+    password: 'RoshanPassword',
+    role: UserRole.Customer,
+    avatar: 'avatar2',
   },
   {
-    id: "2",
-    firstName: "Woong",
-    lastName: "Shin",
-    email: "woong@mail.com",
-    userName: "Woong",
-    password: "WoongPassword"
+    id: '2',
+    firstName: 'Woong',
+    lastName: 'Shin',
+    email: 'woong@mail.com',
+    userName: 'Woong',
+    password: 'WoongPassword',
+    role: UserRole.Customer,
+    avatar: 'avatar2',
   },
 ];
 
 const findUserIndex = (userId: string): number => {
   return users.findIndex((user: User) => user.id === userId);
-}
+};
 
 const findUserIndexByName = (userName: string): number => {
   return users.findIndex((user: User) => user.userName === userName);
-}
+};
 
 // #Ganesh
 export function getUsers(request: Request, response: Response) {
@@ -61,7 +67,7 @@ export function createNewUser(request: Request, response: Response) {
     newUser.id = `${users.length}`;
     users.push(newUser);
   }
-  
+
   response.status(201).json(newUser);
 }
 
@@ -95,28 +101,36 @@ export function updateUser(request: Request, response: Response) {
       users[matchedIndex].email = userInfo.email;
       users[matchedIndex].firstName = userInfo.firstName;
       users[matchedIndex].lastName = userInfo.lastName;
-      
+
       return response.status(200).json(users[matchedIndex]);
     }
-  } 
-  
-  return response.status(404).json({ message: "Not valid user"});
+  }
+
+  return response.status(404).json({ message: 'Not valid user' });
 }
 
 // #Woong
 export function forgetPassword(request: Request, response: Response) {
   const resetPasswordInfo: PasswordReset = request.body;
   if (resetPasswordInfo) {
-    const matchedUser: User | undefined = users.find((user: User) => user.email === resetPasswordInfo.userEmail);
+    const matchedUser: User | undefined = users.find(
+      (user: User) => user.email === resetPasswordInfo.userEmail
+    );
     if (matchedUser) {
-      matchedUser.password = "0000";
-      return response.status(200).json({ message: "Reset password successfully"});
+      matchedUser.password = '0000';
+      return response
+        .status(200)
+        .json({ message: 'Reset password successfully' });
     }
 
-    return response.status(404).json({ message: "User is not exsited! Check the user email again!" })
+    return response
+      .status(404)
+      .json({ message: 'User is not exsited! Check the user email again!' });
   }
 
-  return response.status(400).json({ message: "Password infomation is not valid"})
+  return response
+    .status(400)
+    .json({ message: 'Password infomation is not valid' });
 }
 
 // #Woong
@@ -131,16 +145,14 @@ export function changePassword(request: Request, response: Response) {
         existedUser.password = passwordInfo.newPassword;
         users[matchedIndex] = existedUser;
 
-        return response.status(200).json({ message: "The password successfully changed!" });
-      } 
-      
-      return response.status(404).json({ message: "The password is wrong!" });
-    } 
+        return response
+          .status(200)
+          .json({ message: 'The password successfully changed!' });
+      }
+
+      return response.status(404).json({ message: 'The password is wrong!' });
+    }
   }
-  
-  return response.status(400).json({ message: "Not valid ino provided!" });
+
+  return response.status(400).json({ message: 'Not valid ino provided!' });
 }
-
-
-
-
