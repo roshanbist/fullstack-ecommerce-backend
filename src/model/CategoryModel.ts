@@ -11,22 +11,10 @@ export const CategorySchema = new mongoose.Schema({
     default: 'Deafult Category',
     unique: true,
   },
-  // price: {
-  //   type: Number,
-  //   default: 10,
-  // },
-  isValid: {
-    type: Boolean,
-    default: true,
-  },
   image: {
     type: String,
     required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
-  },
+  }
 });
 
 export default mongoose.model<CategoryDocument>('Category', CategorySchema);

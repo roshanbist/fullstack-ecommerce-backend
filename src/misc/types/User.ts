@@ -4,12 +4,12 @@ export enum UserRole {
 };
 
 export type User = {
-  // id: string;
   firstName: string;
   lastName: string;
   email: string;
-  userName: string;
   password: string;
-  role: 'customer' | 'admin';
+  userName: string;
+  role: UserRole;
   avatar: string;
+  address: string;
 };

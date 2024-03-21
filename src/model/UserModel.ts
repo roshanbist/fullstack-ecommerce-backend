@@ -1,8 +1,6 @@
-import mongoose, { Document, Model } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 import { User } from '../misc/types/User';
-
-const Schema = mongoose.Schema;
 
 export type UserDocument = Document & User;
 
