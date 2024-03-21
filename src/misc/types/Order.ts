@@ -1,5 +1,11 @@
+import { Product } from "./Product";
 import { User } from "./User"
-import { OrderItem } from "./OrderItem";
+
+export type OrderItem = {
+  product: Product;
+  quantity: number;
+  orderId: string;
+}
 
 export type Order = {
   user: User;
