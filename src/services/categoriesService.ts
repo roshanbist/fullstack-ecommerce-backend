@@ -4,24 +4,24 @@ const getAllCategories = async (): Promise<CategoryDocument[]> => {
   return await CategoryModel.find();
 }
 
-const getCategoryById = async (id: string): Promise<CategoryDocument | null> => {
-  return await CategoryModel.findById(id);
+const getCategoryById = async (categoryId: string): Promise<CategoryDocument | null> => {
+  return await CategoryModel.findById(categoryId);
 }
 
 const createCategory = async (category: CategoryDocument): Promise<CategoryDocument> => {
   return await category.save();
 }
  
-const updateCategory = async (id: string, newData: Partial<CategoryDocument>): Promise<CategoryDocument | null> => {
-  const updatedCategory = await CategoryModel.findByIdAndUpdate(id, newData, {
+const updateCategory = async (categoryId: string, newData: Partial<CategoryDocument>): Promise<CategoryDocument | null> => {
+  const updatedCategory = await CategoryModel.findByIdAndUpdate(categoryId, newData, {
     new: true
   });
 
   return updatedCategory;
 }
 
-const deleteCategoryById = async (id: string): Promise<CategoryDocument | null> => {
-  return await CategoryModel.findByIdAndDelete(id);
+const deleteCategoryById = async (categoryId: string): Promise<CategoryDocument | null> => {
+  return await CategoryModel.findByIdAndDelete(categoryId);
 }
 
 export default { 

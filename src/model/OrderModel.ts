@@ -14,7 +14,7 @@ export const OrderSchema = new mongoose.Schema({
       type: Schema.Types.ObjectId,
       ref: 'OrderItem' 
     }],
-    defult: []
+    default: []
   },
   createdAt: {
     type: Date,

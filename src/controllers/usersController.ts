@@ -1,9 +1,11 @@
-import express, { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import mongoose from 'mongoose';
 
 import usersService from '../services/usersService';
-import User from '../model/UserModel';
-import { NotFoundError, InternalServerError } from '../errors/ApiError';
-import mongoose from 'mongoose';
+import { InternalServerError } from '../errors/ApiError';
+import { PasswordReset, PasswordUpdte } from '../misc/types/Password';
+import UserModel from "../model/UserModel";
+import { User } from '../misc/types/User';
 
 export const getAllUsers = async (
   _: Request,
@@ -43,7 +45,7 @@ export const createUser = async (
   next: NextFunction
 ) => {
   try {
-    const data = new User(request.body);
+    const data = new UserModel(request.body);
     const newUser = await usersService.createUser(data);
     console.log('new user ', newUser);
     response.status(201).json(newUser);
@@ -95,47 +97,27 @@ export const updateUser = async (
 };
 
 // #Woong
-// export function updateUser(request: Request, response: Response) {
-//   const userId: string = request.params.userId;
-//   const userInfo: User = request.body;
+export function forgetPassword(request: Request, response: Response) {
+  const resetPasswordInfo: PasswordReset = request.body;
+  if (resetPasswordInfo) {
+    const users:  User[] = [];
+    const matchedUser: User | undefined = users.find(
+      (user: User) => user.email === resetPasswordInfo.userEmail
+    );
+    if (matchedUser) {
+      matchedUser.password = '0000';
+      return response
+        .status(200)
+        .json({ message: 'Reset password successfully' });
+    }
 
-//   if (userId) {
-//     const matchedIndex: number = findUserIndex(userId);
-//     if (matchedIndex > -1) {
-//       users[matchedIndex].email = userInfo.email;
-//       users[matchedIndex].firstName = userInfo.firstName;
-//       users[matchedIndex].lastName = userInfo.lastName;
+    return response
+      .status(404)
+      .json({ message: 'User is not exsited! Check the user email again!' });
+  }
 
-//       return response.status(200).json(users[matchedIndex]);
-//     }
-//   }
-
-//   return response.status(404).json({ message: 'Not valid user' });
-// }
-
-// #Woong
-// export function forgetPassword(request: Request, response: Response) {
-//   const resetPasswordInfo: PasswordReset = request.body;
-//   if (resetPasswordInfo) {
-//     const matchedUser: User | undefined = users.find(
-//       (user: User) => user.email === resetPasswordInfo.userEmail
-//     );
-//     if (matchedUser) {
-//       matchedUser.password = '0000';
-//       return response
-//         .status(200)
-//         .json({ message: 'Reset password successfully' });
-//     }
-
-//     return response
-//       .status(404)
-//       .json({ message: 'User is not exsited! Check the user email again!' });
-//   }
-
-//   return response
-//     .status(400)
-//     .json({ message: 'Password infomation is not valid' });
-// }
+  return response.status(404).json({ message: 'Not valid user' });
+}
 
 // #Woong
 // export function changePassword(request: Request, response: Response) {
