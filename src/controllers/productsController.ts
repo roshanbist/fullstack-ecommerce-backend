@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import mongoose from 'mongoose';
 
 import productsService from '../services/productsService';
 import Product, { ProductDocument } from '../model/ProductModel';
@@ -7,20 +8,27 @@ import {
   InternalServerError,
   NotFoundError,
 } from '../errors/ApiError';
-import mongoose from 'mongoose';
+import { FilterProduct } from '../misc/types/Product';
 
 // #Roshan
 // Get all the products list
 export async function getAllProducts(
-  _: Request,
+  request: Request,
   response: Response,
   next: NextFunction
 ) {
   try {
-    const productsList = await productsService.getAllProducts();
+    const filterProduct: Partial<FilterProduct> = request.query;
+    const productsList = await productsService.getAllProducts(filterProduct);
     response.status(200).json(productsList);
   } catch (error) {
-    next(new InternalServerError('Serve error occured'));
+    if (error instanceof mongoose.Error.CastError) {
+      return response.status(404).json({
+        message: 'Bad request to get products',
+      });
+    }
+
+    next(new InternalServerError('Server error occured'));
   }
 }
 

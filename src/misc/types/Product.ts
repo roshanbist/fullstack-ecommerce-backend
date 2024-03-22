@@ -9,3 +9,11 @@ export type Product = {
   size: Size[];
   category: Category;
 };
+
+export type FilterProduct = {
+  name?: string;
+  limit?: number;
+  offset?: number;
+  min_price?: number;
+  max_price?: number;
+};
