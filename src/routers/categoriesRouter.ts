@@ -12,9 +12,10 @@ import adminCheck from '../middlewares/adminCheck';
 const router = express.Router();
 
 router.get('/', getAllCategories);
-router.get('/:id', getCategoryById);
 router.post('/', adminCheck, createCategory);
-router.put('/:id', adminCheck, updateCategory);
-router.delete('/:id', adminCheck, deleteCategory);
+
+router.get('/:categoryId', getCategoryById);
+router.put('/:categoryId', adminCheck, updateCategory);
+router.delete('/:categoryId', adminCheck, deleteCategory);
 
 export default router;

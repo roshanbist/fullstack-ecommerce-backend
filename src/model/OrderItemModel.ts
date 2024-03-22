@@ -11,14 +11,12 @@ export const OrderItemSchema = new mongoose.Schema({
   },
   quantity: {
     type: Number,
-    defualt: 1
+    default: 1
   },
   orderId: {
-    type: {
-      type: String,
-      required: true
-    }
+    type: Schema.Types.ObjectId,
+    ref: 'Order'
   }
-});
+}); 
 
 export default mongoose.model<OrderItemDocument>('OrderItem', OrderItemSchema);
