@@ -12,7 +12,7 @@ const getAllProducts = async (
   const query: FilterQuery<ProductDocument> = {};
 
   if (name && name.trim().length > 0) {
-    query.name = { $regex: name };
+    query.name = { $regex: name.toLowerCase() };
   }
 
   if (min_price !== undefined && max_price !== undefined) {
