@@ -1,8 +1,35 @@
+import { FilterQuery } from 'mongoose';
+
 import { BadRequest, NotFoundError } from '../errors/ApiError';
 import Product, { ProductDocument } from '../model/ProductModel';
+import { FilterProduct } from '../misc/types/Product';
 
-const getAllProducts = async (): Promise<ProductDocument[]> => {
-  return await Product.find();
+const getAllProducts = async (
+  filterProduct: Partial<FilterProduct>
+): Promise<ProductDocument[]> => {
+  const { limit, offset, min_price, max_price, name = '' } = filterProduct;
+
+  const query: FilterQuery<ProductDocument> = {};
+
+  if (name && name.trim().length > 0) {
+    query.name = { $regex: name.toLowerCase() };
+  }
+
+  if (min_price !== undefined && max_price !== undefined) {
+    query.price = { $gte: min_price, $lte: max_price };
+  } else {
+    query.price = { $gte: 0, $lte: Infinity };
+  }
+
+  const productList = await Product.find(query)
+
+    .sort({ name: 1 })
+    .populate({ path: 'category', select: { name: 1 } }) // shows category name only in the product data
+    .limit(limit || 10)
+    .skip(offset || 0)
+    .exec();
+
+  return productList;
 };
 
 const createNewProduct = async (
