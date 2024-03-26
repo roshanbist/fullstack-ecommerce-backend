@@ -14,7 +14,7 @@ const getUserById = async (id: string): Promise<UserDocument> => {
   if (foundUser) {
     return foundUser;
   }
-  throw new NotFoundError();
+  throw new NotFoundError('Not found user');
 };
 
 const createUser = async (user: UserDocument): Promise<UserDocument> => {

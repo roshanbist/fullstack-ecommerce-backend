@@ -1,11 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 import usersService from '../services/usersService';
 import { ApiError, BadRequest, ForbiddenError, InternalServerError, NotFoundError } from '../errors/ApiError';
 import { PasswordReset, PasswordUpdte } from '../misc/types/Password';
 import UserModel, { UserDocument } from "../model/UserModel";
 import { User } from '../misc/types/User';
+import AuthUtil from '../misc/utils/AuthUtil';
 
 export const getAllUsers = async (
   _: Request,
@@ -108,6 +111,38 @@ export const forgetPassword = async (request: Request, response: Response, next:
     const updatedUser: UserDocument | null = await usersService.resetPassword(matchedUser);
     if (updatedUser) {
       return response.status(200).json(updatedUser); 
+    }
+  
+    throw new ForbiddenError('You are allowed to reset the password');
+  } catch (e) {
+    if (e instanceof mongoose.Error.CastError) { // from mongoose
+      return next(new BadRequest('Wrong format to reset password'));
+    } else if (e instanceof ApiError) {
+      return next(e);
+    }
+
+    return next(new InternalServerError('Cannot reset the password'));
+  } 
+}
+
+// #Woong
+export const updatePassword = async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const userId: string = request.params.userId;
+    const updateInfo: PasswordUpdte = request.body;
+
+    const user: UserDocument = await usersService.getUserById(userId);
+    if (user) {
+      const matched: boolean = await AuthUtil.comparePlainAndHashed(updateInfo.oldPassword, user.password);
+      if (!matched) {
+        throw new BadRequest('Your passowrd is not correct');
+      } 
+
+      user.password = await AuthUtil.getHashedAuth(updateInfo.newPassword);
+      const updatedUser: UserDocument = await usersService.updateUser(userId, user);
+      if (updatedUser) {
+        return response.status(200).json(updatedUser);
+      }
     }
   
     throw new ForbiddenError('You are allowed to reset the password');

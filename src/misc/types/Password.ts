@@ -3,7 +3,6 @@ export type PasswordReset = {
 }
 
 export type PasswordUpdte = {
-  userName: string;
   oldPassword: string;
   newPassword: string;
 }
