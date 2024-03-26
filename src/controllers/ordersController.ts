@@ -66,7 +66,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
         return new OrderItemModel(item);
       });
 
-      newData.items = await ordersService.createOrderItems(newItems, newData._id);
+      newData.items = await ordersService.createOrderItems(newItems);
     }
 
     const newOrder: OrderDocument = await ordersService.createOrder(newData);

@@ -18,10 +18,9 @@ const getOrderyById = async (orderId: string): Promise<OrderDocument | null> => 
     ]);
 }
 
-const createOrderItems = async (items: OrderItemDocument[], orderId: string): Promise<OrderItem[]> => {
+const createOrderItems = async (items: OrderItemDocument[]): Promise<OrderItem[]> => {
   let savedOrderItemIds: OrderItemDocument[] = [];
   for (const item of items) {
-    item.orderId = orderId;
     const savedOrderItem: OrderItemDocument = await item.save();
     savedOrderItemIds.push(savedOrderItem._id);
   }
