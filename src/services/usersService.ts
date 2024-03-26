@@ -39,4 +39,22 @@ const updateUser = async (id: string, newInformation: Partial<UserDocument>): Pr
   throw new NotFoundError();
 };
 
-export default { getAllUser, getUserById, createUser, deleteUser, updateUser };
+// #Woong
+const getUsrByEmail = async (email: string): Promise<UserDocument | null> => {
+  return await User.findOne({ email });
+}
+
+// #Woong
+const resetPassword = async (user: UserDocument): Promise<UserDocument | null> => {
+  return await user.save();
+}
+
+export default { 
+  getAllUser, 
+  getUserById, 
+  createUser, 
+  deleteUser, 
+  updateUser, 
+  resetPassword,
+  getUsrByEmail
+};

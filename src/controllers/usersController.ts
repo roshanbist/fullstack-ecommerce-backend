@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 
 import usersService from '../services/usersService';
-import { InternalServerError } from '../errors/ApiError';
+import { ApiError, BadRequest, ForbiddenError, InternalServerError, NotFoundError } from '../errors/ApiError';
 import { PasswordReset, PasswordUpdte } from '../misc/types/Password';
-import UserModel from "../model/UserModel";
+import UserModel, { UserDocument } from "../model/UserModel";
 import { User } from '../misc/types/User';
 
 export const getAllUsers = async (
@@ -97,48 +97,29 @@ export const updateUser = async (
 };
 
 // #Woong
-export function forgetPassword(request: Request, response: Response) {
-  const resetPasswordInfo: PasswordReset = request.body;
-  if (resetPasswordInfo) {
-    const users:  User[] = [];
-    const matchedUser: User | undefined = users.find(
-      (user: User) => user.email === resetPasswordInfo.userEmail
-    );
-    if (matchedUser) {
-      matchedUser.password = '0000';
-      return response
-        .status(200)
-        .json({ message: 'Reset password successfully' });
+export const forgetPassword = async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const resetPasswordInfo: PasswordReset = request.body;
+    const matchedUser: UserDocument | null = await usersService.getUsrByEmail(resetPasswordInfo.userEmail);
+  
+    if (!matchedUser) {
+      throw new NotFoundError(`User not found with email ${resetPasswordInfo.userEmail}`);
+    }
+  
+    matchedUser.password = 'hopefullyRemeberPassword';
+    const updatedUser: UserDocument | null = await usersService.resetPassword(matchedUser);
+    if (updatedUser) {
+      return response.status(200).json(updatedUser); 
+    }
+  
+    throw new ForbiddenError('You are allowed to reset the password');
+  } catch (e) {
+    if (e instanceof mongoose.Error.CastError) { // from mongoose
+      return next(new BadRequest('Wrong format to reset password'));
+    } else if (e instanceof ApiError) {
+      return next(e);
     }
 
-    return response
-      .status(404)
-      .json({ message: 'User is not exsited! Check the user email again!' });
-  }
-
-  return response.status(404).json({ message: 'Not valid user' });
+    return next(new InternalServerError('Cannot reset the password'));
+  } 
 }
-
-// #Woong
-// export function changePassword(request: Request, response: Response) {
-//   const passwordInfo: PasswordUpdte = request.body;
-
-//   if (passwordInfo) {
-//     const matchedIndex: number = findUserIndexByName(passwordInfo.userName);
-//     if (matchedIndex > -1) {
-//       const existedUser: User = users[matchedIndex];
-//       if (existedUser && existedUser.password === passwordInfo.oldPassword) {
-//         existedUser.password = passwordInfo.newPassword;
-//         users[matchedIndex] = existedUser;
-
-//         return response
-//           .status(200)
-//           .json({ message: 'The password successfully changed!' });
-//       }
-
-//       return response.status(404).json({ message: 'The password is wrong!' });
-//     }
-//   }
-
-//   return response.status(400).json({ message: 'Not valid ino provided!' });
-// }

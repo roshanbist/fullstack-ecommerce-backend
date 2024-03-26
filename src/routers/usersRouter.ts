@@ -1,21 +1,16 @@
 import express from 'express';
 
-import { createUser, deleteuser, getAllUsers, getSingleUser, updateUser } from '../controllers/usersController';
+import { createUser, deleteuser, forgetPassword, getAllUsers, getSingleUser, updateUser } from '../controllers/usersController';
+
 const router = express.Router();
 
-// get all products or paginatedProducts or filter
 router.get("/", getAllUsers);
-
-// // get single product
 router.get('/:id', getSingleUser);
 
-// // create a product
 router.post("/", createUser);
+router.post('/forgetPassword', forgetPassword);
 
-// // delete product
-router.delete('/:id', deleteuser);
-
-// // Update product
 router.put('/:id', updateUser);
+router.delete('/:id', deleteuser);
 
 export default router;
