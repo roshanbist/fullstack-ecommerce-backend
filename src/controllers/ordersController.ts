@@ -14,9 +14,10 @@ import { OrderItem } from '../misc/types/Order';
 import OrderItemModel, { OrderItemDocument } from '../model/OrderItemModel';
 
 // #Woong
-export const getAllOrders = async (_: Request, res: Response, next: NextFunction) => {
+export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const orders: OrderDocument[] = await ordersService.getAllOrders();
+    const userId: string = req.params.userId;
+    const orders: OrderDocument[] = await ordersService.getAllOrders(userId);
     if (orders) {
       return res.status(200).json(orders);
     }
@@ -38,8 +39,7 @@ export const getAllOrders = async (_: Request, res: Response, next: NextFunction
 export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const orderId: string = req.params.orderId;
-    const order: OrderDocument | null =
-      await ordersService.getOrderyById(orderId);
+    const order: OrderDocument | null = await ordersService.getOrderyById(orderId);
     if (order) {
       return res.status(200).json(order);
     }
@@ -56,17 +56,41 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
+const createOrderItems = async (orderItems: OrderItem[]): Promise<OrderItem[]> => {
+  try {
+    const savedOrderItems: OrderItem[] = [];
+
+    for (const item of orderItems) {
+      const itemDocument: OrderItemDocument = new OrderItemModel(item);
+      const savedOrdrItem: OrderItemDocument = await ordersService.createOrderItems(itemDocument); 
+      savedOrderItems.push(savedOrdrItem._id);
+    }
+
+    if (savedOrderItems.length > 0) {
+      return savedOrderItems;
+    }
+  
+    throw new ForbiddenError('Creating order item is not allowed');
+  } catch (e) {
+    if (e instanceof mongoose.Error.CastError) { // from mongoose
+      throw (new BadRequest('Wrong data format to create an order item'));
+    } else if (e instanceof ApiError) {
+      throw e;
+    }
+
+    throw new InternalServerError('Cannot create a new order item');
+  }
+  
+}
+
 // #Woong
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const newData: OrderDocument = new OrderModel(req.body);
-    if (req.body && req.body.items) {
-      const orderItems: OrderItem[] = req.body.items;
-      const newItems: OrderItemDocument[] = orderItems.map((item: OrderItem) => {
-        return new OrderItemModel(item);
-      });
+    const userId: string = req.params.userId;
+    const newData: OrderDocument = new OrderModel({ ...req.body, user: userId });
 
-      newData.items = await ordersService.createOrderItems(newItems);
+    if (req.body && req.body.items && req.body.item.length > 0) {
+      newData.items = await createOrderItems(req.body.items);
     }
 
     const newOrder: OrderDocument = await ordersService.createOrder(newData);
