@@ -26,13 +26,13 @@ export const getSingleUser = async (
   next: NextFunction
 ) => {
   try {
-    const getUser = await usersService.getUserById(request.params.id);
+    const getUser = await usersService.getUserById(request.params.userId);
     response.status(200).json(getUser);
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
       response
         .status(404)
-        .json({ message: `cannot find user with id ${request.params.id}` });
+        .json({ message: `cannot find user with id ${request.params.userId}` });
       return;
     }
     next(new InternalServerError('Internal Server Error'));
@@ -47,10 +47,8 @@ export const createUser = async (
   try {
     const data = new UserModel(request.body);
     const newUser = await usersService.createUser(data);
-    console.log('new user ', newUser);
     response.status(201).json(newUser);
   } catch (error) {
-    // response.status(500).json({ message: "Internal Server Error" });
     next(new InternalServerError('Internal Server Error'));
   }
 };
@@ -61,13 +59,13 @@ export const deleteuser = async (
   next: NextFunction
 ) => {
   try {
-    usersService.deleteUser(request.params.id);
+    usersService.deleteUser(request.params.userId);
     response.sendStatus(204);
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
       response
         .status(404)
-        .json({ message: `cannot find user with id ${request.params.id}` });
+        .json({ message: `cannot find user with id ${request.params.userId}` });
       return;
     }
     next(new InternalServerError('Internal Server Error'));
@@ -81,7 +79,7 @@ export const updateUser = async (
 ) => {
   try {
     const updatedUser = await usersService.updateUser(
-      request.params.id,
+      request.params.userId,
       request.body
     );
     response.status(200).json(updatedUser);
@@ -89,7 +87,7 @@ export const updateUser = async (
     if (error instanceof mongoose.Error.CastError) {
       response
         .status(404)
-        .json({ message: `cannot find user with id ${request.params.id}` });
+        .json({ message: `cannot find user with id ${request.params.userId}` });
       return;
     }
     next(new InternalServerError('Internal Server Error'));

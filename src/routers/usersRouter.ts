@@ -5,12 +5,14 @@ import { createUser, deleteuser, forgetPassword, getAllUsers, getSingleUser, upd
 const router = express.Router();
 
 router.get("/", getAllUsers);
-router.get('/:id', getSingleUser);
+router.get('/:userId', getSingleUser);
 
 router.post("/", createUser);
 router.post('/forgetPassword', forgetPassword);
 
-router.put('/:id', updateUser);
-router.delete('/:id', deleteuser);
+router.put('/:userId', updateUser);
+router.put('/:userId/updatePassword');
+
+router.delete('/:userId', deleteuser);
 
 export default router;
