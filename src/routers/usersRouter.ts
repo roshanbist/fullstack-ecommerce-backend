@@ -1,25 +1,28 @@
 import express from 'express';
 
 import {
-  createUser, 
-  deleteuser, 
-  forgetPassword, 
-  updatePassword, 
-  getAllUsers, 
-  updateUser, 
-  getUserById
+  createUser,
+  deleteuser,
+  forgetPassword,
+  updatePassword,
+  getAllUsers,
+  updateUser,
+  getSingleUserById,
+  userLogin,
 } from '../controllers/usersController';
 
 const router = express.Router();
 
-router.get("/", getAllUsers);
-router.get('/:userId', getUserById);
+router.get('/', getAllUsers);
+router.get('/:userId', getSingleUserById);
 
-router.post("/", createUser);
+router.post('/', createUser);
 router.post('/forgetPassword', forgetPassword);
 
 router.put('/:userId', updateUser);
 router.put('/:userId/updatePassword', updatePassword);
+
+router.post('/login', userLogin)
 
 router.delete('/:userId', deleteuser);
 
