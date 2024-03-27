@@ -1,13 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
 
 import usersService from '../services/usersService';
 import { ApiError, BadRequest, ForbiddenError, InternalServerError, NotFoundError } from '../errors/ApiError';
 import { PasswordReset, PasswordUpdte } from '../misc/types/Password';
 import User, { UserDocument } from '../model/UserModel';
-// import User from '../model/UserModel';
 import AuthUtil from '../misc/utils/AuthUtil';
 
 export const getAllUsers = async (_: Request, response: Response, next: NextFunction) => {
@@ -49,10 +46,12 @@ export const getSingleUserById = async (request: Request, response: Response, ne
 // register user
 export const createUser = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    const data = new User(request.body);
-    const newUser = await usersService.createUser(data);
-    if (newUser) {
-      return response.status(201).json(newUser);
+    const { password, ...userInfo } = request.body;
+    const hashedPassword = await AuthUtil.getHashedAuth(password);
+    const data = new User({ password: hashedPassword, ...userInfo });
+    const userData = await usersService.createUser(data);
+    if (userData) {
+      return response.status(201).json(userData);
     }
     throw new ForbiddenError('Creating User is not allowed');
   } catch (error) {
@@ -106,9 +105,14 @@ export const updateUser = async (request: Request, response: Response, next: Nex
 export const userLogin = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const { email, password } = request.body;
-    const foundUser = await usersService.login(email, password);
-    if (foundUser) {
-      return response.status(200).json({ userInfo: foundUser });
+    const userData = await usersService.getUserByEmail(email);
+    if (userData) {
+      const isMatched = await AuthUtil.comparePlainAndHashed(password, userData.password);
+      if (!isMatched) {
+        throw new BadRequest("Password didn't match");
+      }
+      const tokens = await AuthUtil.generateTokens(userData);
+      return response.status(200).json(tokens);
     }
     throw new NotFoundError('User Not Found');
   } catch (error) {
@@ -118,7 +122,6 @@ export const userLogin = async (request: Request, response: Response, next: Next
     } else if (error instanceof ApiError) {
       return next(error);
     }
-
     return next(new InternalServerError('Internal Server Error'));
   }
 };
