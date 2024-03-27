@@ -8,13 +8,13 @@ export const CategorySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    default: 'Deafult Category',
+    default: 'Default Category',
     unique: true,
   },
   image: {
     type: String,
     required: true,
-  }
+  },
 });
 
 export default mongoose.model<CategoryDocument>('Category', CategorySchema);

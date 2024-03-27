@@ -7,7 +7,15 @@ import { FilterProduct } from '../misc/types/Product';
 const getAllProducts = async (
   filterProduct: Partial<FilterProduct>
 ): Promise<ProductDocument[]> => {
-  const { limit, offset, min_price, max_price, name = '' } = filterProduct;
+  const {
+    limit,
+    offset,
+    min_price,
+    max_price,
+    name = '',
+    category,
+    size = '',
+  } = filterProduct;
 
   const query: FilterQuery<ProductDocument> = {};
 
@@ -21,12 +29,19 @@ const getAllProducts = async (
     query.price = { $gte: 0, $lte: Infinity };
   }
 
-  const productList = await Product.find(query)
+  if (category) {
+    query.category = category;
+  }
 
-    .sort({ name: 1 })
-    .populate({ path: 'category', select: { name: 1 } }) // shows category name only in the product data
-    .limit(limit || 10)
-    .skip(offset || 0)
+  if (size) {
+    query.size = size;
+  }
+
+  const productList = await Product.find(query)
+    .sort({ name: 1 }) // shows product with name in ascending order
+    .populate({ path: 'category' }) // shows category detail in the product data
+    .limit(limit ?? 0)
+    .skip(offset ?? 0)
     .exec();
 
   return productList;
@@ -64,7 +79,7 @@ const updateProduct = async (
 const getProductById = async (
   id: string
 ): Promise<ProductDocument | undefined> => {
-  const foundProduct = await Product.findById(id);
+  const foundProduct = await Product.findById(id).populate('category');
 
   if (!foundProduct) {
     throw new NotFoundError();
