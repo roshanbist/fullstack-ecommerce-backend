@@ -1,13 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
 
 import usersService from '../services/usersService';
 import { ApiError, BadRequest, ForbiddenError, InternalServerError, NotFoundError } from '../errors/ApiError';
 import { PasswordReset, PasswordUpdte } from '../misc/types/Password';
 import UserModel, { UserDocument } from "../model/UserModel";
-import { User } from '../misc/types/User';
 import AuthUtil from '../misc/utils/AuthUtil';
 
 export const getAllUsers = async (
@@ -16,14 +13,14 @@ export const getAllUsers = async (
   next: NextFunction
 ) => {
   try {
-    const userList = await usersService.getAllUser();
+    const userList = await usersService.getAllUsers();
     response.status(200).json(userList);
   } catch (error) {
     next(new InternalServerError('Internal Server Error'));
   }
 };
 
-export const getSingleUser = async (
+export const getUserById = async (
   request: Request,
   response: Response,
   next: NextFunction
@@ -101,7 +98,7 @@ export const updateUser = async (
 export const forgetPassword = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const resetPasswordInfo: PasswordReset = request.body;
-    const matchedUser: UserDocument | null = await usersService.getUsrByEmail(resetPasswordInfo.userEmail);
+    const matchedUser: UserDocument | null = await usersService.getUserByEmail(resetPasswordInfo.userEmail);
   
     if (!matchedUser) {
       throw new NotFoundError(`User not found with email ${resetPasswordInfo.userEmail}`);

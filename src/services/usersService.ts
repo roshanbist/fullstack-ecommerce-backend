@@ -1,10 +1,7 @@
 import { NotFoundError } from '../errors/ApiError';
 import User, { UserDocument } from '../model/UserModel';
-// services : async function
-// talk to database
-// methods: find()
 
-const getAllUser = async (): Promise<UserDocument[]> => {
+const getAllUsers = async (): Promise<UserDocument[]> => {
   return await User.find();
 };
 
@@ -40,7 +37,7 @@ const updateUser = async (id: string, newInformation: Partial<UserDocument>): Pr
 };
 
 // #Woong
-const getUsrByEmail = async (email: string): Promise<UserDocument | null> => {
+const getUserByEmail = async (email: string): Promise<UserDocument | null> => {
   return await User.findOne({ email });
 }
 
@@ -50,11 +47,11 @@ const resetPassword = async (user: UserDocument): Promise<UserDocument | null> =
 }
 
 export default { 
-  getAllUser, 
+  getAllUsers, 
   getUserById, 
   createUser, 
   deleteUser, 
   updateUser, 
   resetPassword,
-  getUsrByEmail
+  getUserByEmail
 };

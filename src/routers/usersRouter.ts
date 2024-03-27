@@ -6,14 +6,14 @@ import {
   forgetPassword, 
   updatePassword, 
   getAllUsers, 
-  getSingleUser, 
-  updateUser 
+  updateUser, 
+  getUserById
 } from '../controllers/usersController';
 
 const router = express.Router();
 
 router.get("/", getAllUsers);
-router.get('/:userId', getSingleUser);
+router.get('/:userId', getUserById);
 
 router.post("/", createUser);
 router.post('/forgetPassword', forgetPassword);
