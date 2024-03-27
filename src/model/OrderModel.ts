@@ -1,21 +1,18 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 import { Order } from '../misc/types/Order';
+import { OrderItemSchema } from './OrderItemModel';
 
 export type OrderDocument = Document & Order;
 
-export const OrderSchema = new mongoose.Schema({
+export const OrderSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
-  items: {
-    type: [{
-      type: Schema.Types.ObjectId,
-      ref: 'OrderItem' 
-    }],
-    default: []
-  },
+  items: [{
+    type: OrderItemSchema 
+  }],
   createdAt: {
     type: Date,
     default: Date.now()

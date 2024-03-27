@@ -4,7 +4,6 @@ import { User } from "./User"
 export type OrderItem = {
   product: Product;
   quantity: number;
-  orderId: string;
 }
 
 export enum OrderStatus {
