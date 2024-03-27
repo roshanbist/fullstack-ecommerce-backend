@@ -10,8 +10,7 @@ import {
 } from '../errors/ApiError';
 import OrderModel, { OrderDocument } from '../model/OrderModel';
 import ordersService from '../services/ordersService';
-import { OrderItem } from '../misc/types/Order';
-import OrderItemModel, { OrderItemDocument } from '../model/OrderItemModel';
+import { Order } from '../misc/types/Order';
 
 // #Woong
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
@@ -24,7 +23,6 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
 
     throw new NotFoundError('No orders found');
   } catch (e) {
-    console.log(e);
     if (e instanceof mongoose.Error.CastError) { // from mongoose
       return next(new BadRequest('Wrong format to get orders'));
     } else if (e instanceof ApiError) {
@@ -56,46 +54,16 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-const createOrderItems = async (orderItems: OrderItem[]): Promise<OrderItem[]> => {
-  try {
-    const savedOrderItems: OrderItem[] = [];
-
-    for (const item of orderItems) {
-      const itemDocument: OrderItemDocument = new OrderItemModel(item);
-      const savedOrdrItem: OrderItemDocument = await ordersService.createOrderItems(itemDocument); 
-      savedOrderItems.push(savedOrdrItem._id);
-    }
-
-    if (savedOrderItems.length > 0) {
-      return savedOrderItems;
-    }
-  
-    throw new ForbiddenError('Creating order item is not allowed');
-  } catch (e) {
-    if (e instanceof mongoose.Error.CastError) { // from mongoose
-      throw (new BadRequest('Wrong data format to create an order item'));
-    } else if (e instanceof ApiError) {
-      throw e;
-    }
-
-    throw new InternalServerError('Cannot create a new order item');
-  }
-  
-}
-
 // #Woong
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId: string = req.params.userId;
-    const newData: OrderDocument = new OrderModel({ ...req.body, user: userId });
-
-    if (req.body && req.body.items && req.body.item.length > 0) {
-      newData.items = await createOrderItems(req.body.items);
-    }
-
-    const newOrder: OrderDocument = await ordersService.createOrder(newData);
-    if (newOrder) {
-      return res.status(201).json(newOrder);
+    const items: Order = req.body;
+    const order: OrderDocument = new OrderModel({ ...items, user: userId });
+    
+    const savedOrder: OrderDocument = await ordersService.createOrder(order);
+    if (savedOrder) {
+      return res.status(201).json(savedOrder);
     }
 
     throw new ForbiddenError('Creating order is not allowed');
@@ -113,12 +81,8 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 // #Woong
 export const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // Make the user not able to change the items(product or quantity but only shipping address)
-    // Alternatively, remove all orderItems and Save new orderItems
-    // But we can decide if user can edit or not
-
-    const orderId = req.params.orderId as string;
-    const updateInfo = req.body as Partial<OrderDocument>;
+    const orderId: string = req.params.orderId;
+    const updateInfo: Partial<OrderDocument> = req.body;
     const updatedOrder = await ordersService.updateOrder(orderId, updateInfo);
     if (updatedOrder) {
       return res.status(200).json(updatedOrder);
@@ -140,7 +104,7 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
 // #Woong
 export const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const orderId = req.params.orderId as string;
+    const orderId: string = req.params.orderId;
     const deletedOrder: OrderDocument | null = await ordersService.deleteOrderById(orderId);
     if (deletedOrder) {
       return res.status(204).json();
