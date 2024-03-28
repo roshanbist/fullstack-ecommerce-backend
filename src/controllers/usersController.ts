@@ -33,7 +33,6 @@ export const getSingleUserById = async (request: Request, response: Response, ne
     throw new NotFoundError('No matched user with the id');
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
-      // from mongoose
       return next(new BadRequest('Wrong id format'));
     } else if (error instanceof ApiError) {
       return next(error);
@@ -43,7 +42,6 @@ export const getSingleUserById = async (request: Request, response: Response, ne
   }
 };
 
-// register user
 export const createUser = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const { password, ...userInfo } = request.body;
@@ -73,8 +71,7 @@ export const deleteuser = async (request: Request, response: Response, next: Nex
     }
     throw new ForbiddenError('Delete User is not allowed');
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      // from mongoose
+    if (error instanceof mongoose.Error.CastError) { // from mongoose
       return next(new BadRequest('Wrong data format to delete'));
     } else if (error instanceof ApiError) {
       return next(error);
@@ -101,7 +98,6 @@ export const updateUser = async (request: Request, response: Response, next: Nex
   }
 };
 
-// user login
 export const userLogin = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const { email, password } = request.body;
@@ -116,8 +112,7 @@ export const userLogin = async (request: Request, response: Response, next: Next
     }
     throw new NotFoundError('User Not Found');
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      // from mongoose
+    if (error instanceof mongoose.Error.CastError) { // from mongoose
       return next(new BadRequest('Wrong data format to login'));
     } else if (error instanceof ApiError) {
       return next(error);

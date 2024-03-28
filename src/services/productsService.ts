@@ -2,49 +2,56 @@ import { FilterQuery } from 'mongoose';
 
 import { BadRequest, NotFoundError } from '../errors/ApiError';
 import Product, { ProductDocument } from '../model/ProductModel';
-import { FilterProduct } from '../misc/types/Product';
+import { FilterProduct, ProductsList } from '../misc/types/Product';
 
 const getAllProducts = async (
   filterProduct: Partial<FilterProduct>
-): Promise<ProductDocument[]> => {
+): Promise<ProductsList> => {
   const {
-    limit,
-    offset,
+    limit = 0,
+    offset = 0,
     min_price,
     max_price,
-    name = '',
-    category,
-    size = '',
+    name,
+    categoryId,
+    size
   } = filterProduct;
 
   const query: FilterQuery<ProductDocument> = {};
 
   if (name && name.trim().length > 0) {
-    query.name = { $regex: name.toLowerCase() };
+    query.name = { $regex: name, $options: 'i' };
   }
 
-  if (min_price !== undefined && max_price !== undefined) {
-    query.price = { $gte: min_price, $lte: max_price };
-  } else {
-    query.price = { $gte: 0, $lte: Infinity };
+  if (min_price) {
+    query.price = { $gte: min_price }
+  }
+  
+  if (max_price) {
+    query.price = { ...query.price, $lte: max_price }
   }
 
-  if (category) {
-    query.category = category;
+  if (categoryId) {
+    query.category = categoryId;
   }
 
   if (size) {
     query.size = size;
   }
 
-  const productList = await Product.find(query)
+  const total: number = await Product.find(query).countDocuments();
+  const products: ProductDocument[] = await Product.find(query)
+    // We need to think about the price asc/desc
     .sort({ name: 1 }) // shows product with name in ascending order
     .populate({ path: 'category' }) // shows category detail in the product data
-    .limit(limit ?? 0)
-    .skip(offset ?? 0)
+    .limit(limit)
+    .skip(offset)
     .exec();
 
-  return productList;
+  return {
+    total,
+    products
+  };
 };
 
 const createNewProduct = async (

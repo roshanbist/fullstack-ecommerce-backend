@@ -1,3 +1,4 @@
+import { ProductDocument } from '../../model/ProductModel';
 import { Category } from './Category';
 import { Size } from './Size';
 
@@ -16,6 +17,11 @@ export type FilterProduct = {
   offset?: number;
   min_price?: number;
   max_price?: number;
-  category?: string;
+  categoryId: string;
   size?: string;
 };
+
+export type ProductsList = {
+  total: number;
+  products: ProductDocument[]
+}

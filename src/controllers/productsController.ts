@@ -8,7 +8,7 @@ import {
   InternalServerError,
   NotFoundError,
 } from '../errors/ApiError';
-import { FilterProduct } from '../misc/types/Product';
+import { FilterProduct, ProductsList } from '../misc/types/Product';
 
 // #Roshan
 // Get all the products list
@@ -19,7 +19,7 @@ export async function getAllProducts(
 ) {
   try {
     const filterProduct: Partial<FilterProduct> = request.query;
-    const productsList = await productsService.getAllProducts(filterProduct);
+    const productsList: ProductsList = await productsService.getAllProducts(filterProduct);
     response.status(200).json(productsList);
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {

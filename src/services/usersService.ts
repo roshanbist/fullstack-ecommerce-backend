@@ -1,21 +1,18 @@
-import { NotFoundError } from '../errors/ApiError';
 import User, { UserDocument } from '../model/UserModel';
 
-const getAllUsers
-  = async (): Promise<UserDocument[]> => {
+const getAllUsers = async (): Promise<UserDocument[]> => {
   return await User.find();
 };
 
-// Will be adding error handling (20.03.2024)
 const getUserById = async (id: string): Promise<UserDocument | null> => {
   return await User.findById(id);
 };
 
-const createUser = async (user: UserDocument): Promise<UserDocument> => {
+const createUser = async (user: UserDocument): Promise<UserDocument | null> => {
   return await user.save();
 };
 
-const deleteUser = async (id: string) => {
+const deleteUser = async (id: string): Promise<UserDocument | null> => {
   return await User.findByIdAndDelete(id);
 };
 
@@ -24,10 +21,6 @@ const updateUser = async (id: string, newInformation: Partial<UserDocument>): Pr
     new: true,
   });
   return updatedUser;
-};
-
-const login = async (email: string, password: string) => {
-  return await User.find({ email: email, password: password });
 };
 
 // #Woong
@@ -47,6 +40,5 @@ export default {
   deleteUser,
   updateUser,
   resetPassword,
-  getUserByEmail,
-  login
+  getUserByEmail
 };
