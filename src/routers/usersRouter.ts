@@ -18,11 +18,10 @@ router.get('/:userId', getSingleUserById);
 
 router.post('/', createUser);
 router.post('/forgetPassword', forgetPassword);
+router.post('/login', userLogin);
 
 router.put('/:userId', updateUser);
 router.put('/:userId/updatePassword', updatePassword);
-
-router.post('/login', userLogin)
 
 router.delete('/:userId', deleteuser);
 
