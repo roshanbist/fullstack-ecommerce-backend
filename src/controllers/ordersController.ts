@@ -90,8 +90,7 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
 
     throw new ForbiddenError('Updating order is not allowed');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) {
-      // from mongoose
+    if (e instanceof mongoose.Error.CastError) { // from mongoose
       return next(new BadRequest('Wrong data format to udpate order'));
     } else if (e instanceof ApiError) {
       return next(e);

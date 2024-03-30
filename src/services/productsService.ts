@@ -41,7 +41,7 @@ const getAllProducts = async (
 
   const total: number = await Product.find(query).countDocuments();
   const products: ProductDocument[] = await Product.find(query)
-    // We need to think about the price asc/desc
+    // TODO: We need to think about the price asc/desc
     .sort({ name: 1 }) // shows product with name in ascending order
     .populate({ path: 'category' }) // shows category detail in the product data
     .limit(limit)

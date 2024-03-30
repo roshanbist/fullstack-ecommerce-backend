@@ -27,6 +27,7 @@ export async function getAllProducts(
         message: 'Bad request to get products',
       });
     }
+    // Not found error missing
 
     next(new InternalServerError('Server error occured'));
   }
@@ -44,6 +45,8 @@ export async function createNewProduct(
     const newProductData = await productsService.createNewProduct(newData);
     response.status(201).json(newProductData);
   } catch (error) {
+    // TODO mongoose error missing
+    // TODO if it is badRequest alreay, you can set the message from service
     if (error instanceof BadRequest) {
       return response.status(400).json({ message: 'Incomplete product data' });
     }
@@ -72,9 +75,7 @@ export async function updateProduct(
       return response.status(404).json({
         message: `No matched product with id ${request.params.productId} found`,
       });
-    }
-
-    if (error instanceof mongoose.Error.CastError) {
+    } else if (error instanceof mongoose.Error.CastError) {
       return response.status(404).json({
         message: 'wrong id format',
       });
@@ -101,9 +102,7 @@ export async function getProductById(
       return response.status(404).json({
         message: `No matched product with id ${request.params.productId} found`,
       });
-    }
-
-    if (error instanceof mongoose.Error.CastError) {
+    } else if (error instanceof mongoose.Error.CastError) {
       return response.status(404).json({
         message: 'wrong product id format',
       });
@@ -129,9 +128,7 @@ export async function deleteProductById(
       return response.status(404).json({
         message: `No matched product with id ${request.params.productId} found`,
       });
-    }
-
-    if (error instanceof mongoose.Error.CastError) {
+    } else if (error instanceof mongoose.Error.CastError) {
       return response.status(404).json({
         message: 'wrong product id format',
       });
