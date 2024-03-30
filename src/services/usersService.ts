@@ -23,6 +23,15 @@ const updateUser = async (id: string, newInformation: Partial<UserDocument>): Pr
   return updatedUser;
 };
 
+const findOrCreateUser = async (userInfo: UserDocument): Promise<UserDocument | null> => {
+  const existedUser: UserDocument | null = await getUserByEmail(userInfo.email);
+  if (existedUser) {
+    return existedUser;
+  }
+
+  return await createUser(userInfo);
+}
+
 // #Woong
 const getUserByEmail = async (email: string): Promise<UserDocument | null> => {
   return await User.findOne({ email });
@@ -40,5 +49,6 @@ export default {
   deleteUser,
   updateUser,
   resetPassword,
-  getUserByEmail
+  getUserByEmail,
+  findOrCreateUser
 };

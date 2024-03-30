@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import passport from 'passport';
+
 import { UserDocument } from '../../model/UserModel';
+import { PassportMethod } from '../types/Passport';
+import { JwtTokens } from '../types/JwtPayload';
 
 export const comparePlainAndHashed = async (plainPassword: string, hashedPassword: string): Promise<boolean> => {
   return await bcrypt.compare(plainPassword, hashedPassword);
@@ -12,13 +16,13 @@ export const getHashedAuth = async (plainPassword: string): Promise<string> => {
   return await bcrypt.hash(plainPassword, salt);
 };
 
-export const generateTokens = async (user: UserDocument) => {
+export const generateTokens = async (user: UserDocument): Promise<JwtTokens> => {
   const JWT_SECRET = process.env.JWT_SECRET as string;
-  console.log('jwt key', JWT_SECRET);
   const accessToken = jwt.sign(
     {
       email: user.email,
       _id: user._id,
+      firstName: user.firstName
     },
     JWT_SECRET,
     {
@@ -30,7 +34,7 @@ export const generateTokens = async (user: UserDocument) => {
     {
       email: user.email,
       _id: user._id,
-      firstName: 'something',
+      firstName: user.firstName
     },
     JWT_SECRET,
     {
@@ -43,5 +47,7 @@ export const generateTokens = async (user: UserDocument) => {
     refreshToken,
   };
 };
+
+export const passportAuthenticate = (method: PassportMethod) => passport.authenticate(method, { session: false });
 
 export default { comparePlainAndHashed, getHashedAuth, generateTokens };

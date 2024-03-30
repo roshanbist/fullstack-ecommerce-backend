@@ -6,6 +6,7 @@ import { ApiError, BadRequest, ForbiddenError, InternalServerError, NotFoundErro
 import { PasswordReset, PasswordUpdte } from '../misc/types/Password';
 import User, { UserDocument } from '../model/UserModel';
 import AuthUtil from '../misc/utils/AuthUtil';
+import { JwtTokens } from '../misc/types/JwtPayload';
 
 export const getAllUsers = async (_: Request, response: Response, next: NextFunction) => {
   try {
@@ -44,9 +45,9 @@ export const getSingleUserById = async (request: Request, response: Response, ne
 
 export const createUser = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    const { password, ...userInfo } = request.body;
+    const { password } = request.body;
     const hashedPassword = await AuthUtil.getHashedAuth(password);
-    const data = new User({ password: hashedPassword, ...userInfo });
+    const data = new User({ ...request.body, password: hashedPassword });
     const userData = await usersService.createUser(data);
     if (userData) {
       return response.status(201).json(userData);
@@ -82,7 +83,9 @@ export const deleteuser = async (request: Request, response: Response, next: Nex
 
 export const updateUser = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    const updatedUser = await usersService.updateUser(request.params.userId, request.body);
+    const user: UserDocument = request.user as UserDocument;
+
+    const updatedUser = await usersService.updateUser(user._id, request.body);
     if (updatedUser) {
       return response.status(200).json(updatedUser);
     }
@@ -101,14 +104,14 @@ export const updateUser = async (request: Request, response: Response, next: Nex
 export const userLogin = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const { email, password } = request.body;
-    const userData = await usersService.getUserByEmail(email);
-    if (userData) {
-      const isMatched = await AuthUtil.comparePlainAndHashed(password, userData.password);
+    const user: UserDocument | null = await usersService.getUserByEmail(email);
+    if (user) {
+      const isMatched: boolean = await AuthUtil.comparePlainAndHashed(password, user.password);
       if (!isMatched) {
         throw new BadRequest("Password didn't match");
       }
-      const tokens = await AuthUtil.generateTokens(userData);
-      return response.status(200).json(tokens);
+      const tokens: JwtTokens = await AuthUtil.generateTokens(user);
+      return response.status(200).json({ tokens, user });
     }
     throw new NotFoundError('User Not Found');
   } catch (error) {
@@ -120,6 +123,26 @@ export const userLogin = async (request: Request, response: Response, next: Next
     return next(new InternalServerError('Internal Server Error'));
   }
 };
+
+export const googleLogin = async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const user: UserDocument | undefined = request.user as UserDocument | undefined;
+    if (user) {
+      const token = AuthUtil.generateTokens(user)
+      response.status(200).json({ token, user });
+    }
+
+    throw new NotFoundError('User is not foud');
+  } catch(e) {
+    if (e instanceof mongoose.Error.CastError) {// from mongoose
+      return next(new BadRequest('Wrong format to login with google'));
+    } else if (e instanceof ApiError) {
+      return next(e);
+    }
+
+    return next(new InternalServerError('Cannot login with google'));
+  }
+}
 
 // #Woong
 export const forgetPassword = async (request: Request, response: Response, next: NextFunction) => {
@@ -153,6 +176,8 @@ export const forgetPassword = async (request: Request, response: Response, next:
 // #Woong
 export const updatePassword = async (request: Request, response: Response, next: NextFunction) => {
   try {
+    console.log('update password', request.user);
+
     const userId: string = request.params.userId;
     const updateInfo: PasswordUpdte = request.body;
 

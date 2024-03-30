@@ -9,20 +9,24 @@ import {
   updateUser,
   getSingleUserById,
   userLogin,
+  googleLogin,
 } from '../controllers/usersController';
+import { passportAuthenticate } from '../misc/utils/AuthUtil';
+import { PassportMethod } from '../misc/types/Passport';
 
 const router = express.Router();
 
-router.get('/', getAllUsers);
-router.get('/:userId', getSingleUserById);
+router.get('/', getAllUsers); // Do we need this?
+router.get('/:userId', getSingleUserById); // Do we need this?
 
 router.post('/', createUser);
 router.post('/forgetPassword', forgetPassword);
 router.post('/login', userLogin);
+router.post('/google-login',  passportAuthenticate(PassportMethod.GOOGLE_ID), googleLogin)
 
-router.put('/:userId', updateUser);
-router.put('/:userId/updatePassword', updatePassword);
+router.put('/', passportAuthenticate(PassportMethod.JWT), updateUser);
+router.put('/updatePassword', passportAuthenticate(PassportMethod.JWT), updatePassword);
 
-router.delete('/:userId', deleteuser);
-
+router.delete('/:userId', deleteuser); // Do we need this?
+ 
 export default router;
