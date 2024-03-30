@@ -23,6 +23,7 @@ const updateUser = async (id: string, newInformation: Partial<UserDocument>): Pr
   return updatedUser;
 };
 
+// # Woong
 const findOrCreateUser = async (userInfo: UserDocument): Promise<UserDocument | null> => {
   const existedUser: UserDocument | null = await getUserByEmail(userInfo.email);
   if (existedUser) {

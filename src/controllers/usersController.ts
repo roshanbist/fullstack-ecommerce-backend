@@ -128,10 +128,10 @@ export const googleLogin = async (request: Request, response: Response, next: Ne
   try {
     const user: UserDocument | undefined = request.user as UserDocument | undefined;
     if (user) {
-      const token = AuthUtil.generateTokens(user)
-      response.status(200).json({ token, user });
+      const tokens: JwtTokens = await AuthUtil.generateTokens(user);
+      return response.status(200).json({ tokens, user });
     }
-
+    
     throw new NotFoundError('User is not foud');
   } catch(e) {
     if (e instanceof mongoose.Error.CastError) {// from mongoose
@@ -176,8 +176,6 @@ export const forgetPassword = async (request: Request, response: Response, next:
 // #Woong
 export const updatePassword = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    console.log('update password', request.user);
-
     const userId: string = request.params.userId;
     const updateInfo: PasswordUpdte = request.body;
 
