@@ -20,12 +20,12 @@ router.get('/', getAllUsers); // Do we need this?
 router.get('/:userId', getSingleUserById); // Do we need this?
 
 router.post('/', createUser);
-router.post('/forgetPassword', forgetPassword);
 router.post('/login', userLogin);
 router.post('/google-login',  passportAuthenticate(PassportMethod.GOOGLE_ID), googleLogin)
+router.post('/forget-password', forgetPassword);
 
-router.put('/', passportAuthenticate(PassportMethod.JWT), updateUser);
-router.put('/updatePassword', passportAuthenticate(PassportMethod.JWT), updatePassword);
+router.put('/', passportAuthenticate(), updateUser);
+router.put('/update-password', passportAuthenticate(), updatePassword);
 
 router.delete('/:userId', deleteuser); // Do we need this?
  

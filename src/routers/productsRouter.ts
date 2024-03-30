@@ -8,14 +8,15 @@ import {
   updateProduct,
 } from '../controllers/productsController';
 import adminCheck from '../middlewares/adminCheck';
+import { passportAuthenticate } from '../misc/utils/AuthUtil';
 
 const router = express.Router();
 
 router.get('/', getAllProducts);
-router.post('/', adminCheck, createNewProduct);
+router.post('/', passportAuthenticate(), adminCheck, createNewProduct);
 
 router.get('/:productId', getProductById);
-router.put('/:productId', adminCheck, updateProduct);
-router.delete('/:productId', adminCheck, deleteProductById);
+router.put('/:productId', passportAuthenticate(), adminCheck, updateProduct);
+router.delete('/:productId', passportAuthenticate(), adminCheck, deleteProductById);
 
 export default router;

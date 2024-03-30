@@ -48,6 +48,6 @@ export const generateTokens = async (user: UserDocument): Promise<JwtTokens> => 
   };
 };
 
-export const passportAuthenticate = (method: PassportMethod) => passport.authenticate(method, { session: false });
+export const passportAuthenticate = (method: PassportMethod = PassportMethod.JWT) => passport.authenticate(method, { session: false });
 
 export default { comparePlainAndHashed, getHashedAuth, generateTokens };

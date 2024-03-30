@@ -54,8 +54,7 @@ export const createUser = async (request: Request, response: Response, next: Nex
     }
     throw new ForbiddenError('Creating User is not allowed');
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      // from mongoose
+    if (error instanceof mongoose.Error.CastError) { // from mongoose
       return next(new BadRequest('Wrong data format to create'));
     } else if (error instanceof ApiError) {
       return next(error);
@@ -91,8 +90,7 @@ export const updateUser = async (request: Request, response: Response, next: Nex
     }
     throw new ForbiddenError('Updating user is not allowed');
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {
-      // from mongoose
+    if (error instanceof mongoose.Error.CastError) { // from mongoose
       return next(new BadRequest('Wrong data format to udpate'));
     } else if (error instanceof ApiError) {
       return next(error);
@@ -124,6 +122,7 @@ export const userLogin = async (request: Request, response: Response, next: Next
   }
 };
 
+// #Woong
 export const googleLogin = async (request: Request, response: Response, next: NextFunction) => {
   try {
     const user: UserDocument | undefined = request.user as UserDocument | undefined;
@@ -162,8 +161,7 @@ export const forgetPassword = async (request: Request, response: Response, next:
 
     throw new ForbiddenError('You are allowed to reset the password');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) {
-      // from mongoose
+    if (e instanceof mongoose.Error.CastError) { // from mongoose
       return next(new BadRequest('Wrong format to reset password'));
     } else if (e instanceof ApiError) {
       return next(e);
@@ -195,8 +193,7 @@ export const updatePassword = async (request: Request, response: Response, next:
 
     throw new ForbiddenError('You are allowed to reset the password');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) {
-      // from mongoose
+    if (e instanceof mongoose.Error.CastError) { // from mongoose
       return next(new BadRequest('Wrong format to reset password'));
     } else if (e instanceof ApiError) {
       return next(e);
