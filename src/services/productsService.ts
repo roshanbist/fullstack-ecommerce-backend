@@ -14,7 +14,7 @@ const getAllProducts = async (
     max_price,
     name,
     categoryId,
-    size
+    size,
   } = filterProduct;
 
   const query: FilterQuery<ProductDocument> = {};
@@ -24,11 +24,11 @@ const getAllProducts = async (
   }
 
   if (min_price) {
-    query.price = { $gte: min_price }
+    query.price = { $gte: min_price };
   }
-  
+
   if (max_price) {
-    query.price = { ...query.price, $lte: max_price }
+    query.price = { ...query.price, $lte: max_price };
   }
 
   if (categoryId) {
@@ -48,9 +48,13 @@ const getAllProducts = async (
     .skip(offset)
     .exec();
 
+  if (!products) {
+    throw new NotFoundError();
+  }
+
   return {
     total,
-    products
+    products,
   };
 };
 
