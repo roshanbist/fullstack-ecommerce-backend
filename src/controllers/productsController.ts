@@ -19,15 +19,20 @@ export async function getAllProducts(
 ) {
   try {
     const filterProduct: Partial<FilterProduct> = request.query;
-    const productsList: ProductsList = await productsService.getAllProducts(filterProduct);
+    const productsList: ProductsList = await productsService.getAllProducts(
+      filterProduct
+    );
     response.status(200).json(productsList);
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
-      return response.status(404).json({
+      return response.status(400).json({
         message: 'Bad request to get products',
       });
     }
-    // Not found error missing
+
+    if (error instanceof NotFoundError) {
+      return response.status(404).json({ message: 'Products not found' });
+    }
 
     next(new InternalServerError('Server error occured'));
   }
@@ -45,7 +50,12 @@ export async function createNewProduct(
     const newProductData = await productsService.createNewProduct(newData);
     response.status(201).json(newProductData);
   } catch (error) {
-    // TODO mongoose error missing
+    if (error instanceof mongoose.Error.CastError) {
+      return response.status(400).json({
+        message: 'Wrong data format to create product',
+      });
+    }
+
     // TODO if it is badRequest alreay, you can set the message from service
     if (error instanceof BadRequest) {
       return response.status(400).json({ message: 'Incomplete product data' });
@@ -76,7 +86,7 @@ export async function updateProduct(
         message: `No matched product with id ${request.params.productId} found`,
       });
     } else if (error instanceof mongoose.Error.CastError) {
-      return response.status(404).json({
+      return response.status(400).json({
         message: 'wrong id format',
       });
     }
@@ -103,7 +113,7 @@ export async function getProductById(
         message: `No matched product with id ${request.params.productId} found`,
       });
     } else if (error instanceof mongoose.Error.CastError) {
-      return response.status(404).json({
+      return response.status(400).json({
         message: 'wrong product id format',
       });
     }
@@ -129,7 +139,7 @@ export async function deleteProductById(
         message: `No matched product with id ${request.params.productId} found`,
       });
     } else if (error instanceof mongoose.Error.CastError) {
-      return response.status(404).json({
+      return response.status(400).json({
         message: 'wrong product id format',
       });
     }
