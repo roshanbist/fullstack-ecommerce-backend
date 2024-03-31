@@ -82,7 +82,10 @@ export const deleteuser = async (request: Request, response: Response, next: Nex
 
 export const updateUser = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    const user: UserDocument = request.user as UserDocument;
+    const user: UserDocument | undefined = request.user as UserDocument | undefined;
+    if (!user) {
+      throw new ForbiddenError('Need to login');
+    }
 
     const updatedUser = await usersService.updateUser(user._id, request.body);
     if (updatedUser) {
@@ -131,7 +134,7 @@ export const googleLogin = async (request: Request, response: Response, next: Ne
       return response.status(200).json({ tokens, user });
     }
     
-    throw new NotFoundError('User is not foud');
+    throw new ForbiddenError('User is undefined');
   } catch(e) {
     if (e instanceof mongoose.Error.CastError) {// from mongoose
       return next(new BadRequest('Wrong format to login with google'));
@@ -153,7 +156,11 @@ export const forgetPassword = async (request: Request, response: Response, next:
       throw new NotFoundError(`User not found with email ${resetPasswordInfo.userEmail}`);
     }
 
-    matchedUser.password = 'hopefullyRemeberPassword';
+    const plainPasswordToReset: string = `tempPasswordToReset_${matchedUser.firstName}`;
+    const hashedPassword: string = await AuthUtil.getHashedAuth(plainPasswordToReset);
+    matchedUser.password = hashedPassword;
+    console.log('Temp passowrd:', plainPasswordToReset);
+    
     const updatedUser: UserDocument | null = await usersService.resetPassword(matchedUser);
     if (updatedUser) {
       return response.status(200).json(updatedUser);
@@ -174,25 +181,30 @@ export const forgetPassword = async (request: Request, response: Response, next:
 // #Woong
 export const updatePassword = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    const userId: string = request.params.userId;
     const updateInfo: PasswordUpdte = request.body;
-
-    const user: UserDocument | null = await usersService.getUserById(userId);
-    if (user) {
-      const matched: boolean = await AuthUtil.comparePlainAndHashed(updateInfo.oldPassword, user.password);
-      if (!matched) {
-        throw new BadRequest('Your passowrd is not correct');
-      }
-
-      user.password = await AuthUtil.getHashedAuth(updateInfo.newPassword);
-      const updatedUser: UserDocument | null = await usersService.updateUser(userId, user);
-      if (updatedUser) {
-        return response.status(200).json(updatedUser);
-      }
+    const user: UserDocument | undefined = request.user as UserDocument | undefined;
+    if (!user) {
+      throw new ForbiddenError('User is undefined, need to login first');
     }
 
-    throw new ForbiddenError('You are allowed to reset the password');
+    console.log('user', user, updateInfo);
+
+    const matched: boolean = await AuthUtil.comparePlainAndHashed(updateInfo.oldPassword, user.password);
+    if (!matched) {
+      throw new BadRequest('The passowrd is not matched');
+    }
+
+    user.password = await AuthUtil.getHashedAuth(updateInfo.newPassword);
+
+    console.log('updated', user);
+    const updatedUser: UserDocument | null = await usersService.updateUser(user._id, user);
+    if (updatedUser) {
+      return response.status(200).json(updatedUser);
+    }
+
+    throw new InternalServerError('Saving updated password failed with unknown error');
   } catch (e) {
+    console.log(e);
     if (e instanceof mongoose.Error.CastError) { // from mongoose
       return next(new BadRequest('Wrong format to reset password'));
     } else if (e instanceof ApiError) {

@@ -13,11 +13,12 @@ import {
 } from '../controllers/usersController';
 import { passportAuthenticate } from '../misc/utils/AuthUtil';
 import { PassportMethod } from '../misc/types/Passport';
+import adminCheck from '../middlewares/adminCheck';
 
 const router = express.Router();
 
-router.get('/', getAllUsers); // Do we need this?
-router.get('/:userId', getSingleUserById); // Do we need this?
+router.get('/', getAllUsers);
+router.get('/:userId', getSingleUserById);
 
 router.post('/', createUser);
 router.post('/login', userLogin);
@@ -27,6 +28,6 @@ router.post('/forget-password', forgetPassword);
 router.put('/', passportAuthenticate(), updateUser);
 router.put('/update-password', passportAuthenticate(), updatePassword);
 
-router.delete('/:userId', deleteuser); // Do we need this?
+router.delete('/:userId', passportAuthenticate(), adminCheck, deleteuser);
  
 export default router;
