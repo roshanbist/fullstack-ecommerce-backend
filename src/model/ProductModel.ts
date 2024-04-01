@@ -8,8 +8,7 @@ export type ProductDocument = Document & Product;
 export const ProductSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   description: {
     type: String,
@@ -17,8 +16,7 @@ export const ProductSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    required: true,
-    default: 10
+    required: true
   },
   images: {
     type: [String],
