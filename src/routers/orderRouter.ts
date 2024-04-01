@@ -7,14 +7,15 @@ import {
   updateOrder,
   deleteOrder
 } from '../controllers/ordersController';
+import { passportAuthenticate } from '../misc/utils/AuthUtil';
 
 const router = express.Router();
 
-router.get('/:userId', getAllOrders);
-router.post('/:userId', createOrder);
+router.get('/', passportAuthenticate(), getAllOrders);
+router.get('/:orderId', passportAuthenticate(), getOrderById);
 
-router.get('/:userId/:orderId', getOrderById);
-router.put('/:userId/:orderId', updateOrder);
-router.delete('/:userId/:orderId', deleteOrder);
+router.post('/', passportAuthenticate(), createOrder);
+router.put('/:orderId', passportAuthenticate(), updateOrder);
+router.delete('/:orderId', passportAuthenticate(), deleteOrder);
 
 export default router;

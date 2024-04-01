@@ -184,10 +184,8 @@ export const updatePassword = async (request: Request, response: Response, next:
     const updateInfo: PasswordUpdte = request.body;
     const user: UserDocument | undefined = request.user as UserDocument | undefined;
     if (!user) {
-      throw new ForbiddenError('User is undefined, need to login first');
+      throw new ForbiddenError('User is undefined, need to login');
     }
-
-    console.log('user', user, updateInfo);
 
     const matched: boolean = await AuthUtil.comparePlainAndHashed(updateInfo.oldPassword, user.password);
     if (!matched) {
@@ -196,21 +194,19 @@ export const updatePassword = async (request: Request, response: Response, next:
 
     user.password = await AuthUtil.getHashedAuth(updateInfo.newPassword);
 
-    console.log('updated', user);
     const updatedUser: UserDocument | null = await usersService.updateUser(user._id, user);
     if (updatedUser) {
       return response.status(200).json(updatedUser);
     }
 
-    throw new InternalServerError('Saving updated password failed with unknown error');
+    throw new InternalServerError('Saving updated password failed');
   } catch (e) {
-    console.log(e);
     if (e instanceof mongoose.Error.CastError) { // from mongoose
-      return next(new BadRequest('Wrong format to reset password'));
+      return next(new BadRequest('Wrong data provided to reset password'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Cannot reset the password'));
+    return next(new InternalServerError('Rest password failed with unknown error'));
   }
 };

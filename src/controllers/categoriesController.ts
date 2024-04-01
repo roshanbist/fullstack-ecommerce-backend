@@ -34,8 +34,8 @@ export const getAllCategories = async (req: Request, res: Response, next: NextFu
 // #Woong
 export const getCategoryById = async (req: Request,res: Response, next: NextFunction) => {
   try {
-    const id: string = req.params.id;
-    const category: CategoryDocument | null = await categoriesService.getCategoryById(id);
+    const categoryId: string = req.params.categoryId;
+    const category: CategoryDocument | null = await categoriesService.getCategoryById(categoryId);
     if (category) {
       return res.status(201).json(category);
     }
@@ -63,8 +63,8 @@ export const createCategory = async (req: Request,res: Response, next: NextFunct
 
     throw new ForbiddenError('Creating category is not allowed');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) { // from mongoose
-      return next(new BadRequest('Wrong data format to create'));
+    if (e instanceof mongoose.Error) { // from mongoose
+      return next(new BadRequest(e.message ?? 'Wrong data format to create'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
@@ -76,9 +76,9 @@ export const createCategory = async (req: Request,res: Response, next: NextFunct
 // #Woong
 export const updateCategory = async (req: Request,res: Response,next: NextFunction) => {
   try {
-    const id = req.params.id as string;
+    const categoryId = req.params.categoryId as string;
     const newData = req.body as Partial<CategoryDocument>;
-    const newCategory = await categoriesService.updateCategory(id, newData);
+    const newCategory = await categoriesService.updateCategory(categoryId, newData);
     if (newCategory) {
       return res.status(200).json(newCategory);
     }
@@ -98,9 +98,9 @@ export const updateCategory = async (req: Request,res: Response,next: NextFuncti
 // #Woong
 export const deleteCategory = async (req: Request,res: Response, next: NextFunction) => {
   try {
-    const id = req.params.id as string;
+    const categoryId = req.params.categoryId as string;
     const newCategory: CategoryDocument | null =
-      await categoriesService.deleteCategoryById(id);
+      await categoriesService.deleteCategoryById(categoryId);
     if (newCategory) {
       return res.status(204).json();
     }

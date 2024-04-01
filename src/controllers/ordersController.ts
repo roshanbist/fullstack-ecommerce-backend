@@ -11,13 +11,18 @@ import {
 import OrderModel, { OrderDocument } from '../model/OrderModel';
 import ordersService from '../services/ordersService';
 import { Order } from '../misc/types/Order';
+import { UserDocument } from '../model/UserModel';
 
 // #Woong
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId: string = req.params.userId;
-    const orders: OrderDocument[] = await ordersService.getAllOrders(userId);
-    if (orders) {
+    const user: UserDocument | undefined = req.user as UserDocument | undefined;
+    if (!user) {
+      throw new ForbiddenError('User is undefined');
+    }
+
+    const orders: OrderDocument[] = await ordersService.getAllOrders(user._id);
+    if (orders && orders.length > 0) {
       return res.status(200).json(orders);
     }
 
@@ -36,6 +41,11 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
 // #Woong
 export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const user: UserDocument | undefined = req.user as UserDocument | undefined;
+    if (!user) {
+      throw new ForbiddenError('User is undefined');
+    }
+
     const orderId: string = req.params.orderId;
     const order: OrderDocument | null = await ordersService.getOrderyById(orderId);
     if (order) {
@@ -57,9 +67,13 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
 // #Woong
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId: string = req.params.userId;
+    const user: UserDocument | undefined = req.user as UserDocument | undefined;
+    if (!user) {
+      throw new ForbiddenError('User is undefined');
+    }
+
     const items: Order = req.body;
-    const order: OrderDocument = new OrderModel({ ...items, user: userId });
+    const order: OrderDocument = new OrderModel({ ...items, user: user._id });
     
     const savedOrder: OrderDocument = await ordersService.createOrder(order);
     if (savedOrder) {
@@ -68,8 +82,9 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 
     throw new ForbiddenError('Creating order is not allowed');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) { // from mongoose
-      return next(new BadRequest('Wrong data format to create an order'));
+    console.log(e);
+    if (e instanceof mongoose.Error) { // from mongoose
+      return next(new BadRequest(e.message ?? 'Wrong data format to create an order'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
@@ -81,6 +96,11 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 // #Woong
 export const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const user: UserDocument | undefined = req.user as UserDocument | undefined;
+    if (!user) {
+      throw new ForbiddenError('User is undefined');
+    }
+
     const orderId: string = req.params.orderId;
     const updateInfo: Partial<OrderDocument> = req.body;
     const updatedOrder = await ordersService.updateOrder(orderId, updateInfo);
@@ -90,8 +110,9 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
 
     throw new ForbiddenError('Updating order is not allowed');
   } catch (e) {
+    console.log(e);
     if (e instanceof mongoose.Error.CastError) { // from mongoose
-      return next(new BadRequest('Wrong data format to udpate order'));
+      return next(new BadRequest(e.message ?? 'Wrong data format to udpate order'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
@@ -103,6 +124,11 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
 // #Woong
 export const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const user: UserDocument | undefined = req.user as UserDocument | undefined;
+    if (!user) {
+      throw new ForbiddenError('User is undefined');
+    }
+
     const orderId: string = req.params.orderId;
     const deletedOrder: OrderDocument | null = await ordersService.deleteOrderById(orderId);
     if (deletedOrder) {
