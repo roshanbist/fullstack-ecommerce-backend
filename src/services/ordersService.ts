@@ -5,13 +5,14 @@ const getAllOrders = async (userId: string): Promise<OrderDocument[]> => {
     user: userId
   }).populate([
     { path: 'user', select: { userName: 1, address: 1 }},
-  { path: 'items.product.category'}  ]);
+    { path: 'items.product.category'}  ]);
 }
 
 const getOrderyById = async (orderId: string): Promise<OrderDocument | null> => {
   return await OrderModel.findById(orderId)
   .populate([
-    { path: 'user', select: { userName: 1, address: 1 }}
+    { path: 'user', select: { userName: 1, address: 1 }},
+    { path: 'items.product.category'} 
   ]);
 }
 
