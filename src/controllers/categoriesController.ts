@@ -37,7 +37,7 @@ export const getCategoryById = async (req: Request,res: Response, next: NextFunc
     const categoryId: string = req.params.categoryId;
     const category: CategoryDocument | null = await categoriesService.getCategoryById(categoryId);
     if (category) {
-      return res.status(201).json(category);
+      return res.status(200).json(category);
     }
 
     throw new NotFoundError('No matched category with the id');
