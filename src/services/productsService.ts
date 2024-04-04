@@ -87,9 +87,7 @@ const updateProduct = async (
   return updatedProductInfo;
 };
 
-const getProductById = async (
-  id: string
-): Promise<ProductDocument | undefined> => {
+const getProductById = async (id: string): Promise<ProductDocument> => {
   const foundProduct = await Product.findById(id).populate('category');
 
   if (!foundProduct) {
