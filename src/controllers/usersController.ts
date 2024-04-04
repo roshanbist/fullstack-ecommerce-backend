@@ -7,6 +7,7 @@ import { PasswordReset, PasswordUpdte } from '../misc/types/Password';
 import User, { UserDocument } from '../model/UserModel';
 import AuthUtil from '../misc/utils/AuthUtil';
 import { JwtTokens } from '../misc/types/JwtPayload';
+import { UserRole } from '../misc/types/User';
 
 export const getAllUsers = async (_: Request, response: Response, next: NextFunction) => {
   try {
@@ -45,9 +46,22 @@ export const getSingleUserById = async (request: Request, response: Response, ne
 
 export const createUser = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    const { password } = request.body;
+    const { password, role } = request.body;
     const hashedPassword = await AuthUtil.getHashedAuth(password);
-    const data = new User({ ...request.body, password: hashedPassword });
+
+    // First user should be an admin
+    let checkedRole: UserRole = role;
+    const shouldBeAdmin: boolean = await usersService.checkIfNoUsers(); 
+    if (shouldBeAdmin) {
+      checkedRole = UserRole.Admin
+    }
+
+    const data = new User({ 
+      ...request.body, 
+      password: hashedPassword,
+      role: checkedRole    
+    });
+
     const userData = await usersService.createUser(data);
     if (userData) {
       return response.status(201).json(userData);

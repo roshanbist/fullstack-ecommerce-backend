@@ -43,6 +43,10 @@ const resetPassword = async (user: UserDocument): Promise<UserDocument | null> =
   return await user.save();
 };
 
+const checkIfNoUsers = async(): Promise<boolean> => {
+  return await User.countDocuments() === 0;
+}
+
 export default {
   getAllUsers,
   getUserById,
@@ -51,5 +55,6 @@ export default {
   updateUser,
   resetPassword,
   getUserByEmail,
-  findOrCreateUser
+  findOrCreateUser,
+  checkIfNoUsers
 };
