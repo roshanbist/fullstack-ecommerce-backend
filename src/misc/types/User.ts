@@ -12,4 +12,10 @@ export type User = {
   role: UserRole;
   avatar: string;
   address: string;
+  active: boolean;
 };
+
+export type UserActiveAndRole = {
+  role: UserRole,
+  active: boolean
+}

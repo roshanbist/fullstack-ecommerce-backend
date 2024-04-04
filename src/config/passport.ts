@@ -1,14 +1,13 @@
 import { ExtractJwt, Strategy as JwtStrategy, VerifiedCallback } from 'passport-jwt';
 import GoogleTokenStrartegy from 'passport-google-id-token';
+import dotenv from 'dotenv';
 
 import { JwtPayload } from '../misc/types/JwtPayload';
 import usersService from '../services/usersService';
 import User, { UserDocument } from '../model/UserModel';
-import { BadRequest, NotFoundError } from '../errors/ApiError';
-import dotenv from 'dotenv';
+import { NotFoundError } from '../errors/ApiError';
 import { GoogleUserInfo, ParsedToken } from '../misc/types/GoogleCredential';
 import { UserRole } from '../misc/types/User';
-import mongoose from 'mongoose';
 import AuthUtil from '../misc/utils/AuthUtil';
 
 dotenv.config({ path: '.env' });
@@ -22,10 +21,16 @@ export const jwtStrategy: JwtStrategy = new JwtStrategy({
   try {
     const userEmail: string = payload.email;
     const user: UserDocument | null = await usersService.getUserByEmail(userEmail);
-    if (user) {
+    if (user && user.active) {
       return done(null, user);
     }
-    throw new NotFoundError('User is not found');
+
+    let message = 'User is not existed';
+    if (user && !user.active) {
+      message = 'User is inactive';
+    } 
+
+    throw new NotFoundError(message);
   } catch (e) {
     done(e, false); 
   }

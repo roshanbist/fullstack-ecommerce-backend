@@ -21,13 +21,13 @@ export const getAllCategories = async (req: Request, res: Response, next: NextFu
 
     throw new NotFoundError('No categories found');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) { // from mongoose
-      return next(new BadRequest('Wrong format to get categories'));
+    if (e instanceof mongoose.Error) { // from mongoose
+      return next(new BadRequest(e.message ?? 'Wrong format to get categories'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Cannot find the categories'));
+    return next(new InternalServerError('Unkown error ouccured to find the categories'));
   }
 };
 
@@ -42,13 +42,13 @@ export const getCategoryById = async (req: Request,res: Response, next: NextFunc
 
     throw new NotFoundError('No matched category with the id');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) { // from mongoose
-      return next(new BadRequest('Wrong id format'));
+    if (e instanceof mongoose.Error) { // from mongoose
+      return next(new BadRequest(e.message ?? 'Wrong id to find category'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Cannot find the category'));
+    return next(new InternalServerError('Unkown error ouccured to find category'));
   }
 };
 
@@ -64,12 +64,12 @@ export const createCategory = async (req: Request,res: Response, next: NextFunct
     throw new ForbiddenError('Creating category is not allowed');
   } catch (e) {
     if (e instanceof mongoose.Error) { // from mongoose
-      return next(new BadRequest(e.message ?? 'Wrong data format to create'));
+      return next(new BadRequest(e.message ?? 'Wrong data to create category'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Cannot create a new category'));
+    return next(new InternalServerError('Unkown error ouccured to create category'));
   }
 };
 
@@ -83,15 +83,15 @@ export const updateCategory = async (req: Request,res: Response,next: NextFuncti
       return res.status(200).json(newCategory);
     }
 
-    throw new ForbiddenError('Updating category is not allowed');
+    throw new ForbiddenError('Update category is not allowed');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) { // from mongoose
-      return next(new BadRequest('Wrong data format to udpate'));
+    if (e instanceof mongoose.Error) { // from mongoose
+      return next(new BadRequest(e.message ?? 'Wrong data to udpate category'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Cannot update the category'));
+    return next(new InternalServerError('Unkown error ouccured to update category'));
   }
 };
 
@@ -107,12 +107,12 @@ export const deleteCategory = async (req: Request,res: Response, next: NextFunct
 
     throw new ForbiddenError('Delete category is not allowed');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) { // from mongoose
-      return next(new BadRequest('Wrong data format to delete'));
+    if (e instanceof mongoose.Error) { // from mongoose
+      return next(new BadRequest(e.message ?? 'Wrong data to delete category'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Cannot delete the category'));
+    return next(new InternalServerError('Unkown error ouccured to delete the category'));
   }
 };

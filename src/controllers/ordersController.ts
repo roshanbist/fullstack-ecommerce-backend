@@ -18,7 +18,7 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
   try {
     const user: UserDocument | undefined = req.user as UserDocument | undefined;
     if (!user) {
-      throw new ForbiddenError('User is undefined');
+      throw new NotFoundError('User is not existed');
     }
 
     const orders: OrderDocument[] = await ordersService.getAllOrders(user._id);
@@ -28,13 +28,13 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
 
     throw new NotFoundError('No orders found');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) { // from mongoose
-      return next(new BadRequest('Wrong format to get orders'));
+    if (e instanceof mongoose.Error) { // from mongoose
+      return next(new BadRequest(e.message ?? 'Wrong data to get orders'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Cannot find the orders'));
+    return next(new InternalServerError('Unkown error ouccured to find the orders'));
   }
 };
 
@@ -43,7 +43,7 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
   try {
     const user: UserDocument | undefined = req.user as UserDocument | undefined;
     if (!user) {
-      throw new ForbiddenError('User is undefined');
+      throw new NotFoundError('User is not exsited');
     }
 
     const orderId: string = req.params.orderId;
@@ -54,13 +54,13 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
 
     throw new NotFoundError('No matched order with the id');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) { // from mongoose
-      return next(new BadRequest('Wrong id format'));
+    if (e instanceof mongoose.Error) { // from mongoose
+      return next(new BadRequest(e.message ?? 'Wrong order id to get the order'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Cannot find the order'));
+    return next(new InternalServerError('Unkown error ouccured to find the order'));
   }
 };
 
@@ -69,7 +69,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
   try {
     const user: UserDocument | undefined = req.user as UserDocument | undefined;
     if (!user) {
-      throw new ForbiddenError('User is undefined');
+      throw new NotFoundError('User is not existed');
     }
 
     const items: Order = req.body;
@@ -111,13 +111,13 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
     throw new ForbiddenError('Updating order is not allowed');
   } catch (e) {
     console.log(e);
-    if (e instanceof mongoose.Error.CastError) { // from mongoose
-      return next(new BadRequest(e.message ?? 'Wrong data format to udpate order'));
+    if (e instanceof mongoose.Error) { // from mongoose
+      return next(new BadRequest(e.message ?? 'Wrong data to udpate order'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Cannot update the order'));
+    return next(new InternalServerError('Unkown error ouccured to update the order'));
   }
 };
 
@@ -126,7 +126,7 @@ export const deleteOrder = async (req: Request, res: Response, next: NextFunctio
   try {
     const user: UserDocument | undefined = req.user as UserDocument | undefined;
     if (!user) {
-      throw new ForbiddenError('User is undefined');
+      throw new NotFoundError('User is not existed');
     }
 
     const orderId: string = req.params.orderId;
@@ -137,12 +137,12 @@ export const deleteOrder = async (req: Request, res: Response, next: NextFunctio
 
     throw new ForbiddenError('Deleting order is not allowed');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) { // from mongoose
-      return next(new BadRequest('Wrong data format to delete order'));
+    if (e instanceof mongoose.Error) { // from mongoose
+      return next(new BadRequest(e.message ?? 'Wrong data to delete order'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Cannot delete the order'));
+    return next(new InternalServerError('Unkown error ouccured to delete the order'));
   }
 };
