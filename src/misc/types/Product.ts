@@ -7,7 +7,7 @@ export type Product = {
   price: number;
   description: string;
   images: string[];
-  size: Size[];
+  size: Size;
   category: Category;
 };
 
@@ -23,5 +23,5 @@ export type FilterProduct = {
 
 export type ProductsList = {
   total: number;
-  products: ProductDocument[]
-}
+  products: ProductDocument[];
+};
