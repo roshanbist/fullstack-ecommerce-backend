@@ -28,6 +28,22 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Product"
+    post:
+      summary: create a new product 
+      description: create a new product
+      requestBody: 
+        description: data to create a product
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/Product"
+      responses:
+        '201':
+          description: create a new product successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
 
   /products/{productId}:
     get:
@@ -44,6 +60,30 @@ paths:
         "200":
           description: the product with product id
           content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+    put:
+      summary: update the product by product id
+      description: update the product by product id
+      parameters:
+        - name: productId
+          required: true
+          in: path
+          description: id of the product
+          schema: 
+            type: string
+      requestBody: 
+        description: data to update the product
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/Product"
+      responses:
+        "200":
+          description: the product with product id is updated successfully
+          content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Product"
@@ -93,6 +133,23 @@ paths:
               schema: 
                 $ref: "#/components/schemas/User"
 
+    put:
+      summary: update the user
+      description: update the user
+      requestBody: 
+        description: data to update the user
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/User"
+      responses: 
+        "201":  
+          description: create a new user successfully
+          content: 
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/User"
+
   /users/{userId}:
     get:
       summary: get the user by user id
@@ -112,30 +169,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
 
-    put:
-      summary: update the user with user id and user properties
-      description: update the user with user id and user properties
-      parameters:
-        - name: userId
-          required: true
-          in: path
-          description: id of the user
-          schema:
-            type: string
-      requestBody:
-        description: update the user
-        content:
-          application/json:
-            schema:  
-              $ref: "#/components/schemas/User"
-      responses:
-        "200": 
-          description: updated the user successfully
-          content:
-            application/json:
-              schema:  
-                $ref: "#/components/schemas/User"
-
     delete:
       summary: delete the user with user id 
       description: update the user with user id
@@ -150,12 +183,48 @@ paths:
         "204": 
           description: deleted the user successfully              
       
-  /users/forgetPassword:
+  /users/login:
+    post:
+      summary: login with user email/password
+      description: login with user email/password
+      requestBody:
+        description: user email/password
+        content:
+          application/json:
+            schema:  
+              $ref: "#/components/schemas/Login"
+      responses:
+        "200": 
+          description: logged in successfully
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+                
+  /users/google-login:
+    post:
+      summary: login with google account
+      description: login with google account
+      requestBody:
+        description: google credentials
+        content:
+          application/json:
+            schema:  
+              $ref: "#/components/schemas/GoogleCredentials"
+      responses:
+        "200": 
+          description: logged in with google account & credentials successfully
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+  /users/forget-password:
     post:
       summary: send forget password request with user email
       description: send forget password request with user email
       requestBody:
-        description: request forget password
+        description: user email to request forget password
         content:
           application/json:
             schema:  
@@ -169,51 +238,260 @@ paths:
                 type: string
                 example: Reset password successfully
 
-  /users/changePassword:
-    post:
-      summary: send change password request with userName, oldPassword, newPassword
-      description: send change password request with userName, oldPassword, newPassword
+  /users/update-password:
+    put:
+      summary: update password with oldPassword, newPassword
+      description: update password with oldPassword, newPassword
       requestBody:
-        description: request change password
+        description: old/new passwords to update
         content:
           application/json:
             schema:  
               $ref: "#/components/schemas/PasswordUpdate"
       responses:
         "200": 
-          description: change password successfully
+          description: update password successfully
           content: 
             application/json:
               schema:
                 type: string
-                example: Change password successfully
+                example: Update password successfully
+
+  /categories:
+    get:
+      summary: get the list of categories
+      description: get the list of categories
+      responses: 
+        "200":
+          description: get the categories list successfully
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+    post:
+      summary: create a new category
+      description: create a new category
+      requestBody: 
+        description: data to create a new category
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/Category"
+      responses: 
+        "200":
+          description: create new category successfully
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+  /categories/{categoryId}:
+    get:
+      summary: get a category by category id
+      description: get a category by category id
+      parameters:
+        - name: categoryId
+          required: true
+          in: path
+          description: id of category
+          schema:
+            type: string
+      responses: 
+        "200":
+          description: get a category by category id successfully
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+    put:
+      summary: update category by category id
+      description: upate category by category id
+      parameters:
+        - name: categoryId
+          required: true
+          in: path
+          description: id of category
+          schema:
+            type: string
+      requestBody: 
+        description: data to update category
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/Category"
+      responses: 
+        "200":
+          description: update category successfully
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+
+    delete:
+      summary: delete category by category id
+      description: delete category by category id
+      parameters:
+        - name: categoryId
+          required: true
+          in: path
+          description: id of category
+          schema:
+            type: string
+      responses:
+        "204": 
+          description: deleted the category successfully   
+
+  /order:
+    get:
+      summary: get the list of orders
+      description: get the list of orders
+      responses: 
+        "200":
+          description: get the orders list successfully
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+    post:
+      summary: create a new order
+      description: create a new order
+      requestBody: 
+        description: data to create a new order
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/Order"
+      responses: 
+        "200":
+          description: create a new order successfully
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /order/{orderId}:
+    get:
+      summary: get the order by order id
+      description: get the order by order id
+      parameters:
+        - name: orderId
+          required: true
+          in: path
+          description: id of order
+          schema:
+            type: string
+      responses: 
+        "200":
+          description: get the order by order id successfully
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+    put:
+      summary: update order by order id
+      description: update order by order id
+      parameters:
+        - name: orderId
+          required: true
+          in: path
+          description: id of order
+          schema:
+            type: string
+      requestBody: 
+        description: data to update order
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/Order"
+      responses: 
+        "201":
+          description: update order successfully
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+    delete:
+      summary: delete order by order id
+      description: delete order by order id
+      parameters:
+        - name: orderId
+          required: true
+          in: path
+          description: id of order
+          schema:
+            type: string
+      responses: 
+        "204":
+          description: delete order successfully
+
+  /admin/{userId}:
+    put:
+      summary: update user role and active by admin
+      description: update user role and active by admin
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          description: id of user
+          schema:
+            type: string
+      requestBody: 
+        description: data to update user active and role
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/UserActiveAndRole"
+      responses: 
+        "201":
+          description: update user role/active successfully
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
 
 components: 
   schemas:
     Product: 
       type: object
       properties: 
-        ID:  
-          type: string
-          example: 4
         name: 
           type: string
           example: Handmade Fresh Table
+        price:
+          type: number
+          example: 30
         description:  
           type: string
           example: "Andy shoes are designed to keeping in..."
-        categories:
+        images: 
           type: array
           items:
-            $ref: '#/components/schemas/Category'
-        variants:
-          type: array
-          items:
-            $ref: '#/components/schemas/Variant'
+            type: string
+            example: [
+              "https://placeimg.com/640/480/any?r=0.9178516507833767",
+              "https://placeimg.com/640/480/any?r=0.9300320592588625",
+              "https://placeimg.com/640/480/any?r=0.8807778235430017"
+            ]
         sizes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Size'
+          $ref: '#/components/schemas/Size'
+        category:
+          $ref: '#/components/schemas/Category'
+        
 
     Category:
       type: object  
@@ -221,21 +499,13 @@ components:
         name:
           type: string
           example: T-shirt
-
-    Variant:
-      type: string
-      example: Red
-    
-    Size:
-      type: string
-      example: XL
+        image: 
+          type: string
+          example: "https://placeimg.com/640/480/any?r=0.9178516507833767"
     
     User:
       type: object
       properties:
-        ID:
-          type: string
-          example: 133
         firstName:
           type: string
           example: "Jhon"
@@ -245,29 +515,120 @@ components:
         email:
           type: string
           example: "john@mail.com"
+        password:
+          type: string
+          example: "secret_password"
         userName:
           type: string
           example: "Jhon"
-        password:
+        role:
+          $ref: '#/components/schemas/UserRole'
+        avatar:
           type: string
-          example: "password__not--real"
+          example: "https://placeimg.com/640/480/any?r=0.9178516507833767"
+        address:
+          type: string
+          example: "Helsinki, 001000, Finland"
+        active:
+          type: boolean
+          example: true
+
+    Order:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        items:
+          type: array
+          items: 
+            $ref: '#/components/schemas/OrderItem'
+            example: [
+              $ref: '#/components/schemas/OrderItem'
+            ]
+        createAt:
+          type: string
+          example: '1712262031507'
+        totalPrice:
+          type: number
+          example: 1040
+        shippingAddress:
+          type: string
+          example: 'Helsinki, 00100, Finland'
+
+    OrderItem:
+      type: object
+      properties:
+        product:
+          $ref: '#/components/schemas/Product'
+        quantity:
+          type: number
+          example: 1
+
+    Size:
+      type: string
+      example: XL
+
+    UserRole:
+      type: string
+      example: 'customer'
+
+    UserActiveAndRole:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/UserRole'
+        active:
+          type: boolean
+          example: true
 
     PasswordReset:
       type: object
       properties:
         userEmail: 
           type: string
-          example: user@mail.com
+          example: 'user@mail.com'
     
     PasswordUpdate:
       type: object
       properties:
-        userName:
-          type: string
-          example: userName
         oldPassword:
           type: string
-          example: oldPassword
+          example: 'oldPassword'
         newPassword:
           type: string
-          example: newPassword
+          example: 'newPassword'
+    
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          example: 'user@mail.com'
+        password:
+          type: string
+          example: 'userPassword'    
+    
+    LoginResponse:
+      type: object
+      properties:
+        tokens:
+          $ref: '#/components/schemas/Tokens'
+        user:
+          $ref: '#/components/schemas/User'
+
+    Tokens:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: 'aikjeiZuijhd1712dikej262031507'
+        refreshToken:
+          type: string
+          example: 'kej2621dkjZi9&*KJ712dikehd1712'
+
+    GoogleCredentials:
+      type: object
+      properties:
+        id_token:
+          type: string
+          example: 'aikjeiZuijhd1712dikej262031507kej2621dkjZi9&*KJ712dikehd1712'
