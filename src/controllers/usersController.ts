@@ -2,14 +2,24 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 
 import usersService from '../services/usersService';
-import { ApiError, BadRequest, ForbiddenError, InternalServerError, NotFoundError } from '../errors/ApiError';
+import {
+  ApiError,
+  BadRequest,
+  ForbiddenError,
+  InternalServerError,
+  NotFoundError,
+} from '../errors/ApiError';
 import { PasswordReset, PasswordUpdte } from '../misc/types/Password';
 import User, { UserDocument } from '../model/UserModel';
 import AuthUtil from '../misc/utils/AuthUtil';
 import { JwtTokens } from '../misc/types/JwtPayload';
 import { UserRole } from '../misc/types/User';
 
-export const getAllUsers = async (_: Request, response: Response, next: NextFunction) => {
+export const getAllUsers = async (
+  _: Request,
+  response: Response,
+  next: NextFunction
+) => {
   try {
     const userList = await usersService.getAllUsers();
     if (userList) {
@@ -26,7 +36,11 @@ export const getAllUsers = async (_: Request, response: Response, next: NextFunc
   }
 };
 
-export const getSingleUserById = async (request: Request, response: Response, next: NextFunction) => {
+export const getSingleUserById = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
   try {
     const getUser = await usersService.getUserById(request.params.userId);
     if (getUser) {
@@ -44,22 +58,26 @@ export const getSingleUserById = async (request: Request, response: Response, ne
   }
 };
 
-export const createUser = async (request: Request, response: Response, next: NextFunction) => {
+export const createUser = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
   try {
     const { password, role } = request.body;
     const hashedPassword = await AuthUtil.getHashedAuth(password);
 
     // First user should be an admin
     let checkedRole: UserRole = role;
-    const shouldBeAdmin: boolean = await usersService.checkIfNoUsers(); 
+    const shouldBeAdmin: boolean = await usersService.checkIfNoUsers();
     if (shouldBeAdmin) {
-      checkedRole = UserRole.Admin
+      checkedRole = UserRole.Admin;
     }
 
-    const data = new User({ 
-      ...request.body, 
+    const data = new User({
+      ...request.body,
       password: hashedPassword,
-      role: checkedRole    
+      role: checkedRole,
     });
 
     const userData = await usersService.createUser(data);
@@ -69,7 +87,8 @@ export const createUser = async (request: Request, response: Response, next: Nex
     throw new ForbiddenError('Creating User is not allowed');
   } catch (error) {
     console.log(error);
-    if (error instanceof mongoose.Error.CastError) { // from mongoose
+    if (error instanceof mongoose.Error.CastError) {
+      // from mongoose
       return next(new BadRequest('Wrong data format to create'));
     } else if (error instanceof ApiError) {
       return next(error);
@@ -78,7 +97,11 @@ export const createUser = async (request: Request, response: Response, next: Nex
   }
 };
 
-export const deleteuser = async (request: Request, response: Response, next: NextFunction) => {
+export const deleteuser = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
   try {
     const foundUser = await usersService.deleteUser(request.params.userId);
     if (foundUser) {
@@ -86,7 +109,8 @@ export const deleteuser = async (request: Request, response: Response, next: Nex
     }
     throw new ForbiddenError('Delete User is not allowed');
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) { // from mongoose
+    if (error instanceof mongoose.Error.CastError) {
+      // from mongoose
       return next(new BadRequest('Wrong data format to delete'));
     } else if (error instanceof ApiError) {
       return next(error);
@@ -95,9 +119,15 @@ export const deleteuser = async (request: Request, response: Response, next: Nex
   }
 };
 
-export const updateUser = async (request: Request, response: Response, next: NextFunction) => {
+export const updateUser = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
   try {
-    const user: UserDocument | undefined = request.user as UserDocument | undefined;
+    const user: UserDocument | undefined = request.user as
+      | UserDocument
+      | undefined;
     if (!user) {
       throw new ForbiddenError('Need to login');
     }
@@ -108,7 +138,8 @@ export const updateUser = async (request: Request, response: Response, next: Nex
     }
     throw new ForbiddenError('Updating user is not allowed');
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) { // from mongoose
+    if (error instanceof mongoose.Error.CastError) {
+      // from mongoose
       return next(new BadRequest('Wrong data format to udpate'));
     } else if (error instanceof ApiError) {
       return next(error);
@@ -117,12 +148,19 @@ export const updateUser = async (request: Request, response: Response, next: Nex
   }
 };
 
-export const userLogin = async (request: Request, response: Response, next: NextFunction) => {
+export const userLogin = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
   try {
     const { email, password } = request.body;
     const user: UserDocument | null = await usersService.getUserByEmail(email);
     if (user) {
-      const isMatched: boolean = await AuthUtil.comparePlainAndHashed(password, user.password);
+      const isMatched: boolean = await AuthUtil.comparePlainAndHashed(
+        password,
+        user.password
+      );
       if (!isMatched) {
         throw new BadRequest("Password didn't match");
       }
@@ -131,7 +169,8 @@ export const userLogin = async (request: Request, response: Response, next: Next
     }
     throw new NotFoundError('User Not Found');
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) { // from mongoose
+    if (error instanceof mongoose.Error.CastError) {
+      // from mongoose
       return next(new BadRequest('Wrong data format to login'));
     } else if (error instanceof ApiError) {
       return next(error);
@@ -141,17 +180,24 @@ export const userLogin = async (request: Request, response: Response, next: Next
 };
 
 // #Woong
-export const googleLogin = async (request: Request, response: Response, next: NextFunction) => {
+export const googleLogin = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
   try {
-    const user: UserDocument | undefined = request.user as UserDocument | undefined;
+    const user: UserDocument | undefined = request.user as
+      | UserDocument
+      | undefined;
     if (user) {
       const tokens: JwtTokens = await AuthUtil.generateTokens(user);
       return response.status(200).json({ tokens, user });
     }
-    
+
     throw new ForbiddenError('User is undefined');
-  } catch(e) {
-    if (e instanceof mongoose.Error.CastError) {// from mongoose
+  } catch (e) {
+    if (e instanceof mongoose.Error.CastError) {
+      // from mongoose
       return next(new BadRequest('Wrong format to login with google'));
     } else if (e instanceof ApiError) {
       return next(e);
@@ -159,31 +205,44 @@ export const googleLogin = async (request: Request, response: Response, next: Ne
 
     return next(new InternalServerError('Cannot login with google'));
   }
-}
+};
 
 // #Woong
-export const forgetPassword = async (request: Request, response: Response, next: NextFunction) => {
+export const forgetPassword = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
   try {
     const resetPasswordInfo: PasswordReset = request.body;
-    const matchedUser: UserDocument | null = await usersService.getUserByEmail(resetPasswordInfo.userEmail);
+    const matchedUser: UserDocument | null = await usersService.getUserByEmail(
+      resetPasswordInfo.userEmail
+    );
 
     if (!matchedUser) {
-      throw new NotFoundError(`User not found with email ${resetPasswordInfo.userEmail}`);
+      throw new NotFoundError(
+        `User not found with email ${resetPasswordInfo.userEmail}`
+      );
     }
 
     const plainPasswordToReset: string = `tempPasswordToReset_${matchedUser.firstName}`;
-    const hashedPassword: string = await AuthUtil.getHashedAuth(plainPasswordToReset);
+    const hashedPassword: string = await AuthUtil.getHashedAuth(
+      plainPasswordToReset
+    );
     matchedUser.password = hashedPassword;
     console.log('Temp passowrd:', plainPasswordToReset);
-    
-    const updatedUser: UserDocument | null = await usersService.resetPassword(matchedUser);
+
+    const updatedUser: UserDocument | null = await usersService.resetPassword(
+      matchedUser
+    );
     if (updatedUser) {
       return response.status(200).json(updatedUser);
     }
 
     throw new ForbiddenError('You are allowed to reset the password');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) { // from mongoose
+    if (e instanceof mongoose.Error.CastError) {
+      // from mongoose
       return next(new BadRequest('Wrong format to reset password'));
     } else if (e instanceof ApiError) {
       return next(e);
@@ -194,34 +253,49 @@ export const forgetPassword = async (request: Request, response: Response, next:
 };
 
 // #Woong
-export const updatePassword = async (request: Request, response: Response, next: NextFunction) => {
+export const updatePassword = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
   try {
     const updateInfo: PasswordUpdte = request.body;
-    const user: UserDocument | undefined = request.user as UserDocument | undefined;
+    const user: UserDocument | undefined = request.user as
+      | UserDocument
+      | undefined;
     if (!user) {
       throw new ForbiddenError('User is undefined, need to login');
     }
 
-    const matched: boolean = await AuthUtil.comparePlainAndHashed(updateInfo.oldPassword, user.password);
+    const matched: boolean = await AuthUtil.comparePlainAndHashed(
+      updateInfo.oldPassword,
+      user.password
+    );
     if (!matched) {
       throw new BadRequest('The passowrd is not matched');
     }
 
     user.password = await AuthUtil.getHashedAuth(updateInfo.newPassword);
 
-    const updatedUser: UserDocument | null = await usersService.updateUser(user._id, user);
+    const updatedUser: UserDocument | null = await usersService.updateUser(
+      user._id,
+      user
+    );
     if (updatedUser) {
       return response.status(200).json(updatedUser);
     }
 
     throw new InternalServerError('Saving updated password failed');
   } catch (e) {
-    if (e instanceof mongoose.Error.CastError) { // from mongoose
+    if (e instanceof mongoose.Error.CastError) {
+      // from mongoose
       return next(new BadRequest('Wrong data provided to reset password'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Rest password failed with unknown error'));
+    return next(
+      new InternalServerError('Rest password failed with unknown error')
+    );
   }
 };
