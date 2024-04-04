@@ -64,8 +64,13 @@ export const createUser = async (
   next: NextFunction
 ) => {
   try {
-    const { password, role } = request.body;
-    const hashedPassword = await AuthUtil.getHashedAuth(password);
+    const { email, password, role } = request.body;
+
+    // Check email, if already in use
+    const existedUser: UserDocument | null = await usersService.getUserByEmail(email);
+    if (existedUser) {
+      throw new BadRequest('The email is already in use');
+    }
 
     // First user should be an admin
     let checkedRole: UserRole = role;
@@ -74,6 +79,7 @@ export const createUser = async (
       checkedRole = UserRole.Admin;
     }
 
+    const hashedPassword = await AuthUtil.getHashedAuth(password);
     const data = new User({
       ...request.body,
       password: hashedPassword,
@@ -84,11 +90,10 @@ export const createUser = async (
     if (userData) {
       return response.status(201).json(userData);
     }
+
     throw new ForbiddenError('Creating User is not allowed');
   } catch (error) {
-    console.log(error);
-    if (error instanceof mongoose.Error.CastError) {
-      // from mongoose
+    if (error instanceof mongoose.Error.CastError) {// from mongoose
       return next(new BadRequest('Wrong data format to create'));
     } else if (error instanceof ApiError) {
       return next(error);
