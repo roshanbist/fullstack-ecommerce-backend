@@ -68,6 +68,7 @@ export const createUser = async (request: Request, response: Response, next: Nex
     }
     throw new ForbiddenError('Creating User is not allowed');
   } catch (error) {
+    console.log(error);
     if (error instanceof mongoose.Error.CastError) { // from mongoose
       return next(new BadRequest('Wrong data format to create'));
     } else if (error instanceof ApiError) {

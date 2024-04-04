@@ -1,3 +1,4 @@
+import { sendWelcomeEmail } from '../config/email';
 import User, { UserDocument } from '../model/UserModel';
 
 const getAllUsers = async (): Promise<UserDocument[]> => {
@@ -8,8 +9,13 @@ const getUserById = async (id: string): Promise<UserDocument | null> => {
   return await User.findById(id);
 };
 
-const createUser = async (user: UserDocument): Promise<UserDocument | null> => {
-  return await user.save();
+const createUser = async (user: UserDocument, plainPasswordForGoogleLogin: string | null = null): Promise<UserDocument | null> => {
+  const newUser: UserDocument | null = await user.save();
+  if (newUser) {
+    await sendWelcomeEmail(user, plainPasswordForGoogleLogin);
+  }
+
+  return newUser;
 };
 
 const deleteUser = async (id: string): Promise<UserDocument | null> => {
@@ -24,13 +30,13 @@ const updateUser = async (id: string, newInformation: Partial<UserDocument>): Pr
 };
 
 // # Woong
-const findOrCreateUser = async (userInfo: UserDocument): Promise<UserDocument | null> => {
-  const existedUser: UserDocument | null = await getUserByEmail(userInfo.email);
+const findOrCreateUser = async (user: UserDocument, plainPasswordForGoogleLogin: string): Promise<UserDocument | null> => {
+  const existedUser: UserDocument | null = await getUserByEmail(user.email);
   if (existedUser) {
     return existedUser;
   }
-
-  return await createUser(userInfo);
+  
+  return await createUser(user, plainPasswordForGoogleLogin);
 }
 
 // #Woong

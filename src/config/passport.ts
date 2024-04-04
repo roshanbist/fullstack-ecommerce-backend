@@ -46,7 +46,6 @@ export const googleStrategy = new GoogleTokenStrartegy({
     const plainPasswordForGoogleLogin = `${googleInfo.given_name}_${googleInfo.family_name}`;
     const passwordForGoogleLogin: string = await AuthUtil.getHashedAuth(plainPasswordForGoogleLogin);
     
-    console.log('The password to send email', plainPasswordForGoogleLogin);
     const userInfo: UserDocument = new User({
       firstName: googleInfo.given_name,
       lastName: googleInfo.family_name,
@@ -55,10 +54,10 @@ export const googleStrategy = new GoogleTokenStrartegy({
       userName: googleInfo.name,
       role: UserRole.Customer,
       avatar: googleInfo.picture,
-      address: 'Need new address' // Need to be address
+      address: 'Need to be updated' // Need to be updated
     });
   
-    const user: UserDocument | null = await usersService.findOrCreateUser(userInfo);
+    const user: UserDocument | null = await usersService.findOrCreateUser(userInfo, plainPasswordForGoogleLogin);
     if (user) {
       return done(null, user);
     }
