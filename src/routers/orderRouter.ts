@@ -11,7 +11,8 @@ import { passportAuthenticate } from '../misc/utils/AuthUtil';
 
 const router = express.Router();
 
-router.get('/', passportAuthenticate(), getAllOrders);
+// router.get('/', passportAuthenticate(), getAllOrders);
+router.get('/', getAllOrders)
 router.get('/:orderId', passportAuthenticate(), getOrderById);
 
 router.post('/', passportAuthenticate(), createOrder);
