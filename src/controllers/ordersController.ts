@@ -10,12 +10,7 @@ import { UserDocument } from '../model/UserModel';
 // #Woong
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user: UserDocument | undefined = req.user as UserDocument | undefined;
-    if (!user) {
-      throw new NotFoundError('User is not existed');
-    }
-
-    const orders: OrderDocument[] = await ordersService.getAllOrders(user._id);
+    const orders: OrderDocument[] = await ordersService.getAllOrders();
     if (orders && orders.length > 0) {
       return res.status(200).json(orders);
     }
@@ -36,11 +31,6 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
 // #Woong
 export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user: UserDocument | undefined = req.user as UserDocument | undefined;
-    if (!user) {
-      throw new NotFoundError('User is not exsited');
-    }
-
     const orderId: string = req.params.orderId;
     const order: OrderDocument | null = await ordersService.getOrderyById(orderId);
     if (order) {
@@ -57,6 +47,32 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
     }
 
     return next(new InternalServerError('Unkown error ouccured to find the order'));
+  }
+};
+
+// #Woong
+export const getMyOrders = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user: UserDocument | undefined = req.user as UserDocument | undefined;
+    if (!user) {
+      throw new NotFoundError('User is not existed');
+    }
+
+    const orders: OrderDocument[] = await ordersService.getMyOrders(user._id);
+    if (orders && orders.length > 0) {
+      return res.status(200).json(orders);
+    }
+
+    throw new NotFoundError('No orders found');
+  } catch (e) {
+    if (e instanceof mongoose.Error.CastError) {
+      // from mongoose
+      return next(new BadRequest('Wrong format to get orders'));
+    } else if (e instanceof ApiError) {
+      return next(e);
+    }
+
+    return next(new InternalServerError('Unkown error ouccured to find the orders'));
   }
 };
 

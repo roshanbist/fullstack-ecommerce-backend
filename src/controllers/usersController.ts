@@ -25,7 +25,6 @@ const PayLoad = (request: Request) => {
 
 export const getAllUsers = async (request: Request, response: Response, next: NextFunction) => {
   try {
-    PayLoad(request);
     const userList = await usersService.getAllUsers();
     if (userList) {
       return response.status(200).json(userList);
@@ -47,7 +46,6 @@ export const getSingleUserById = async (
   next: NextFunction
 ) => {
   try {
-    PayLoad(request);
     const getUser = await usersService.getUserById(request.params.userId);
     if (getUser) {
       return response.status(200).json(getUser);

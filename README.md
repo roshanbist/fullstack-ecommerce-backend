@@ -55,5 +55,8 @@ The API should include comprehensive error handling with clear and informative e
 Developers should conduct unit tests and integration tests to ensure the reliability and correctness of the API. Instructions for running the tests should be provided in the project's documentation.
 
 ## Deployment
+Check the live link [Base url](https://fs17-backend-b5i2.onrender.com)
+Here are some examples
 
-The API should be deployed before the **`DEADLINE`**
+[See all products](https://fs17-backend-b5i2.onrender.com/api/v1/products)
+[See all categories]https://fs17-backend-b5i2.onrender.com/api/v1/categories

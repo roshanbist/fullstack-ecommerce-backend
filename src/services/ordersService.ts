@@ -1,18 +1,27 @@
 import OrderModel, { OrderDocument } from "../model/OrderModel";
 
-const getAllOrders = async (userId: string): Promise<OrderDocument[]> => {
-  return await OrderModel.find({
-    user: userId
-  }).populate([
-    { path: 'user', select: { userName: 1, address: 1 }},
-    { path: 'items.product.category'}  ]);
+const getAllOrders = async (): Promise<OrderDocument[]> => {
+  return await OrderModel.find()
+    .populate([
+      { path: 'user', select: { passowrd: -1 }},
+      { path: 'items.product.category'}  
+    ]);
 }
 
 const getOrderyById = async (orderId: string): Promise<OrderDocument | null> => {
   return await OrderModel.findById(orderId)
   .populate([
-    { path: 'user', select: { userName: 1, address: 1 }},
+    { path: 'user', select: { password: -1 }},
     { path: 'items.product.category'} 
+  ]);
+}
+
+const getMyOrders = async (userId: string): Promise<OrderDocument[]> => {  
+  return await OrderModel.find({
+    user: userId
+  }).populate([
+    { path: 'user', select: { passowrd: -1 }},
+    { path: 'items.product.category'}  
   ]);
 }
 
@@ -35,6 +44,7 @@ const deleteOrderById = async (orerId: string): Promise<OrderDocument | null> =>
 export default { 
   getAllOrders, 
   getOrderyById,
+  getMyOrders,
   createOrder,
   updateOrder,
   deleteOrderById
