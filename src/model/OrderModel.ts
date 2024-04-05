@@ -8,10 +8,12 @@ export type OrderDocument = Document & Order;
 export const OrderSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
   items: [{
-    type: OrderItemSchema 
+    type: OrderItemSchema,
+    required: true 
   }],
   createdAt: {
     type: Date,
@@ -22,7 +24,8 @@ export const OrderSchema = new Schema({
     default: 0
   },
   shippingAddress: {
-    type: String
+    type: String,
+    required: true
   }
 });
 

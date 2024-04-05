@@ -76,7 +76,7 @@ describe('category controller test', () => {
 
   it('cannot create a category if user is a customer', async () => {
     // First user is always admin
-    // Creat second user
+    // Create second user
     await createUser(UserRole.Admin, { email: 'admin@mail.com'});
     const accessToken: string = await createUserAndLoginAndGetAccessToken(
       UserRole.Customer
