@@ -3,7 +3,7 @@ import request from 'supertest';
 import connect, { MongoHelper } from '../db-helper';
 import app from '../../src/app';
 import { Product } from '../../src/misc/types/Product';
-import { createUserAndLoginAndGetAccessToken } from '../utils/testUtil';
+import { createUser, createUserAndLoginAndGetAccessToken } from '../utils/testUtil';
 import { UserRole } from '../../src/misc/types/User';
 import { ProductDocument } from '../../src/model/ProductModel';
 import { createCategory } from './categoriesController.test';
@@ -87,6 +87,9 @@ describe('product controller test', () => {
 
   it('should not create a product if user is customer', async () => {
     // create user, login user and get access token
+    // First user is always admin
+    // Create second user
+    await createUser(UserRole.Admin, { email: 'admin@mail.com'});
     const accessToken: string = await createUserAndLoginAndGetAccessToken(
       UserRole.Customer
     );
