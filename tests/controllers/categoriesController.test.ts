@@ -5,7 +5,7 @@ import app from '../../src/app';
 import { CategoryDocument } from '../../src/model/CategoryModel';
 import { UserRole } from '../../src/misc/types/User';
 import { Category } from '../../src/misc/types/Category';
-import { createUserAndLoginAndGetAccessToken } from '../utils/testUtil';
+import { createUser, createUserAndLoginAndGetAccessToken } from '../utils/testUtil';
 
 export function getCategoryData(name: string = 'category1'): Category {
   return {
@@ -75,9 +75,14 @@ describe('category controller test', () => {
   });
 
   it('cannot create a category if user is a customer', async () => {
+    // First user is always admin
+    // Creat second user
+    await createUser(UserRole.Admin, { email: 'admin@mail.com'});
     const accessToken: string = await createUserAndLoginAndGetAccessToken(
       UserRole.Customer
     );
+
+
     const createCategoryResponse = await createCategory(accessToken);
     expect(createCategoryResponse.status).toBe(403); // Fobidden
   });

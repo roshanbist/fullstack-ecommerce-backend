@@ -15,11 +15,12 @@ const user: Partial<User> = {
   userName: 'userName',
   avatar: 'http://avatar.png',
   address: 'address',
+  active: true,
   ...userAuth
 };
 
-export async function createUser(role: UserRole = UserRole.Customer) {
-  return await request(app).post('/api/v1/users').send({ ...user, role });
+export async function createUser(role: UserRole = UserRole.Customer, customerUser: Partial<User> | null = null) {
+  return await request(app).post('/api/v1/users').send({ ...user, ...customerUser, role });
 };
 
 export async function login() {
