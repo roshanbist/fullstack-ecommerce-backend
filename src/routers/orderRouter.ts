@@ -5,7 +5,8 @@ import {
   getOrderById,
   createOrder,
   updateOrder,
-  deleteOrder
+  deleteOrder,
+  getMyOrders
 } from '../controllers/ordersController';
 import { passportAuthenticate } from '../misc/utils/AuthUtil';
 
