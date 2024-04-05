@@ -17,7 +17,7 @@ export type FilterProduct = {
   offset?: number;
   min_price?: number;
   max_price?: number;
-  categoryId: string;
+  category?: string;
   size?: string;
 };
 

@@ -13,7 +13,7 @@ const getAllProducts = async (
     min_price,
     max_price,
     name,
-    categoryId,
+    category,
     size,
   } = filterProduct;
 
@@ -31,8 +31,8 @@ const getAllProducts = async (
     query.price = { ...query.price, $lte: max_price };
   }
 
-  if (categoryId) {
-    query.category = categoryId;
+  if (category) {
+    query.category = category;
   }
 
   if (size) {
