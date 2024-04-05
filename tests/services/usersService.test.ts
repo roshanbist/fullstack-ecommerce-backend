@@ -3,6 +3,7 @@ import request from 'supertest';
 import connect, { MongoHelper } from '../db-helper';
 import usersService from '../../src/services/usersService';
 import { createUser } from '../utils/testUtil';
+import { UserRole } from '../../src/misc/types/User';
 
 // tear down
 describe('user controller test', () => {
@@ -83,8 +84,9 @@ describe('user controller test', () => {
 
   // find or create user
   it('should create a new user if not found', async () => {
-    const newUser = await createUser();
-    const findUser = await usersService.findOrCreateUser(newUser.body);
+    const plainPassword = '1234'
+    const newUser = await createUser(UserRole.Admin, { password: plainPassword });
+    const findUser = await usersService.findOrCreateUser(newUser.body, plainPassword);
     console.log('find user', findUser);
     console.log('update user', findUser);
     expect(findUser).toHaveProperty('firstName');
