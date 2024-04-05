@@ -1,13 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 
-import {
-  ApiError,
-  BadRequest,
-  ForbiddenError,
-  InternalServerError,
-  NotFoundError,
-} from '../errors/ApiError';
+import { ApiError, BadRequest, ForbiddenError, InternalServerError, NotFoundError } from '../errors/ApiError';
 import OrderModel, { OrderDocument } from '../model/OrderModel';
 import ordersService from '../services/ordersService';
 import { Order } from '../misc/types/Order';
@@ -28,8 +22,9 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
 
     throw new NotFoundError('No orders found');
   } catch (e) {
-    if (e instanceof mongoose.Error) { // from mongoose
-      return next(new BadRequest(e.message ?? 'Wrong data to get orders'));
+    if (e instanceof mongoose.Error.CastError) {
+      // from mongoose
+      return next(new BadRequest('Wrong format to get orders'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
@@ -54,8 +49,9 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
 
     throw new NotFoundError('No matched order with the id');
   } catch (e) {
-    if (e instanceof mongoose.Error) { // from mongoose
-      return next(new BadRequest(e.message ?? 'Wrong order id to get the order'));
+    if (e instanceof mongoose.Error.CastError) {
+      // from mongoose
+      return next(new BadRequest('Wrong id format'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
@@ -74,7 +70,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 
     const items: Order = req.body;
     const order: OrderDocument = new OrderModel({ ...items, user: user._id });
-    
+
     const savedOrder: OrderDocument = await ordersService.createOrder(order);
     if (savedOrder) {
       return res.status(201).json(savedOrder);
@@ -83,7 +79,8 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     throw new ForbiddenError('Creating order is not allowed');
   } catch (e) {
     console.log(e);
-    if (e instanceof mongoose.Error) { // from mongoose
+    if (e instanceof mongoose.Error) {
+      // from mongoose
       return next(new BadRequest(e.message ?? 'Wrong data format to create an order'));
     } else if (e instanceof ApiError) {
       return next(e);
@@ -111,8 +108,9 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
     throw new ForbiddenError('Updating order is not allowed');
   } catch (e) {
     console.log(e);
-    if (e instanceof mongoose.Error) { // from mongoose
-      return next(new BadRequest(e.message ?? 'Wrong data to udpate order'));
+    if (e instanceof mongoose.Error.CastError) {
+      // from mongoose
+      return next(new BadRequest(e.message ?? 'Wrong data format to udpate order'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
@@ -137,8 +135,9 @@ export const deleteOrder = async (req: Request, res: Response, next: NextFunctio
 
     throw new ForbiddenError('Deleting order is not allowed');
   } catch (e) {
-    if (e instanceof mongoose.Error) { // from mongoose
-      return next(new BadRequest(e.message ?? 'Wrong data to delete order'));
+    if (e instanceof mongoose.Error.CastError) {
+      // from mongoose
+      return next(new BadRequest('Wrong data format to delete order'));
     } else if (e instanceof ApiError) {
       return next(e);
     }

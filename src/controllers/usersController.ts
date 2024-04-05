@@ -15,12 +15,17 @@ import AuthUtil from '../misc/utils/AuthUtil';
 import { JwtTokens } from '../misc/types/JwtPayload';
 import { UserRole } from '../misc/types/User';
 
-export const getAllUsers = async (
-  _: Request,
-  response: Response,
-  next: NextFunction
-) => {
+const PayLoad = (request: Request) => {
+  const userPayload = request.user as UserDocument | undefined;
+  if (!userPayload) {
+    throw new ForbiddenError('Need to login');
+  }
+  return userPayload;
+};
+
+export const getAllUsers = async (request: Request, response: Response, next: NextFunction) => {
   try {
+    PayLoad(request);
     const userList = await usersService.getAllUsers();
     if (userList) {
       return response.status(200).json(userList);
@@ -42,6 +47,7 @@ export const getSingleUserById = async (
   next: NextFunction
 ) => {
   try {
+    PayLoad(request);
     const getUser = await usersService.getUserById(request.params.userId);
     if (getUser) {
       return response.status(200).json(getUser);
@@ -93,7 +99,8 @@ export const createUser = async (
 
     throw new ForbiddenError('Creating User is not allowed');
   } catch (error) {
-    if (error instanceof mongoose.Error.CastError) {// from mongoose
+    if (error instanceof mongoose.Error.CastError) {
+      // from mongoose
       return next(new BadRequest('Wrong data format to create'));
     } else if (error instanceof ApiError) {
       return next(error);
@@ -108,7 +115,8 @@ export const deleteuser = async (
   next: NextFunction
 ) => {
   try {
-    const foundUser = await usersService.deleteUser(request.params.userId);
+      const userPayload = request.user as UserDocument;
+      const foundUser = await usersService.deleteUser(userPayload._id);
     if (foundUser) {
       return response.sendStatus(204);
     }
@@ -130,13 +138,7 @@ export const updateUser = async (
   next: NextFunction
 ) => {
   try {
-    const user: UserDocument | undefined = request.user as
-      | UserDocument
-      | undefined;
-    if (!user) {
-      throw new ForbiddenError('Need to login');
-    }
-
+    const user = PayLoad(request)
     const updatedUser = await usersService.updateUser(user._id, request.body);
     if (updatedUser) {
       return response.status(200).json(updatedUser);
