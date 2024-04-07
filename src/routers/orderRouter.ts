@@ -2,19 +2,19 @@ import express from 'express';
 
 import {
   getAllOrders,
-  getOrderById,
+  getMyOrderById,
   createOrder,
   updateOrder,
   deleteOrder,
-  getMyOrders
+  getAllMyOrders
 } from '../controllers/ordersController';
 import { passportAuthenticate } from '../misc/utils/AuthUtil';
 
 const router = express.Router();
 
 router.get('/', getAllOrders)
-router.get('/:orderId', getOrderById);
-router.get('/myOrders', passportAuthenticate(), getMyOrders);
+router.get('/myOrders', passportAuthenticate(), getAllMyOrders);
+router.get('/myOrders/:orderId', passportAuthenticate(), getMyOrderById);
 
 router.post('/', passportAuthenticate(), createOrder);
 router.put('/:orderId', passportAuthenticate(), updateOrder);

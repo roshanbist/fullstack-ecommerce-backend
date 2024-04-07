@@ -28,30 +28,7 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-// #Woong
-export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const orderId: string = req.params.orderId;
-    const order: OrderDocument | null = await ordersService.getOrderyById(orderId);
-    if (order) {
-      return res.status(200).json(order);
-    }
-
-    throw new NotFoundError('No matched order with the id');
-  } catch (e) {
-    if (e instanceof mongoose.Error.CastError) {
-      // from mongoose
-      return next(new BadRequest('Wrong id format'));
-    } else if (e instanceof ApiError) {
-      return next(e);
-    }
-
-    return next(new InternalServerError('Unkown error ouccured to find the order'));
-  }
-};
-
-// #Woong
-export const getMyOrders = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllMyOrders = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user: UserDocument | undefined = req.user as UserDocument | undefined;
     if (!user) {
@@ -76,7 +53,32 @@ export const getMyOrders = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-// #Woong
+export const getMyOrderById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user: UserDocument | undefined = req.user as UserDocument | undefined;
+    if (!user) {
+      throw new NotFoundError('User is not existed');
+    }
+    
+    const orderId: string = req.params.orderId;
+    const order: OrderDocument | null = await ordersService.getOrderyById(orderId);
+    if (order) {
+      return res.status(200).json(order);
+    }
+
+    throw new NotFoundError('No matched order with the id');
+  } catch (e) {
+    if (e instanceof mongoose.Error.CastError) {
+      // from mongoose
+      return next(new BadRequest('Wrong id format'));
+    } else if (e instanceof ApiError) {
+      return next(e);
+    }
+
+    return next(new InternalServerError('Unkown error ouccured to find the order'));
+  }
+};
+
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user: UserDocument | undefined = req.user as UserDocument | undefined;
