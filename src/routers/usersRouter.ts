@@ -10,6 +10,7 @@ import {
   getSingleUserById,
   userLogin,
   googleLogin,
+  checkEmail
 } from '../controllers/usersController';
 import { passportAuthenticate } from '../misc/utils/AuthUtil';
 import { PassportMethod } from '../misc/types/Passport';
@@ -21,6 +22,7 @@ router.get('/', getAllUsers);
 router.get('/:userId', getSingleUserById);
 
 router.post('/', createUser);
+router.post('/check-email', checkEmail);
 router.post('/login', userLogin);
 router.post('/google-login', passportAuthenticate(PassportMethod.GOOGLE_ID), googleLogin);
 router.post('/forget-password', forgetPassword);
