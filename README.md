@@ -1,7 +1,7 @@
 # E-commerce API
   The project is a part of Integrify's Node.js backend module 2024.
   
-  We as a group, [Woong](https://github.com/Woongsik), [Roshan](https://github.com/roshanb03) and [Ganesh](https://github.com/ganesh-poudel), 
+  We as a group, [Woong](https://github.com/Woongsik), [Roshan](https://github.com/roshanbist) and [Ganesh](https://github.com/ganesh-poudel), 
   simulated E-commerce API and try to provide a good collection of REST APIs between users and server transactions.
 
   Each entity basically have a CRUD(Create, Read, Update, Delete) operations but also a special access only for ADMIN.
@@ -11,19 +11,24 @@
 ## Introduction
 ![ERD Diagram](./src/assets/images/ERD-ECOMMERCE.png)
 
-   We have structured base entities 
-      - Users
-      - Products
-      - Categories
-      - Orders
-      - OrderItems
+We have structured base entities 
+   
+   - Users
+   
+   - Products
+   
+   - Categories
+   
+   - Orders
+   
+   - OrderItems
 
 ## Getting started
    ### Prerequisites
-      - node `^19.2.0`
-      - npm `^9.2.0`
+   - node `^19.2.0`
+   - npm `^9.2.0`
 
-      Make sure you have [npm](https://www.npmjs.com/get-npm) installed globally.
+   Make sure you have [npm](https://www.npmjs.com/get-npm) installed globally.
 
    #### 1.Clone the project:
    ```bash
@@ -40,7 +45,8 @@
    #### 3. Navigate to [http://localhost:8080](http://localhost:8080)
 
 ## Authentication
-   For security, this API should implement user authentication using JSON Web Tokens (JWT). Each user should have a unique username and password OR broker authentication. Certain admin endpoints may require special privileges for access.
+   For security, this API should implement user authentication using JSON Web Tokens (JWT). 
+   Each user should have a unique username and password OR broker authentication. Certain admin endpoints may require special privileges for access.
 
 ## Features
    1. Products
@@ -90,7 +96,13 @@
             ``` 
 
 ## Testing
-   [Jest](https://jestjs.io/), [Supertest](https://www.npmjs.com/package/supertest), [MongoDB memory server](https://www.npmjs.com/package/mongodb-memory-server)
+   For the testing, Jest, Supertest, MongoDB memory server are used.
+
+   - [Jest](https://jestjs.io/), 
+   
+   - [Supertest](https://www.npmjs.com/package/supertest), 
+   
+   - [MongoDB memory server](https://www.npmjs.com/package/mongodb-memory-server)
 
    Check test code in src/tests
    ```bash
