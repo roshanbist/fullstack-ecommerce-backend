@@ -23,7 +23,11 @@ const PayLoad = (request: Request) => {
   return userPayload;
 };
 
-export const getAllUsers = async (request: Request, response: Response, next: NextFunction) => {
+export const getAllUsers = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
   try {
     const userList = await usersService.getAllUsers();
     if (userList) {
@@ -70,13 +74,15 @@ export const checkEmail = async (
   try {
     const { email } = request.body;
     // Check email, if already in use
-    const existedUser: UserDocument | null = await usersService.getUserByEmail(email);
+    const existedUser: UserDocument | null = await usersService.getUserByEmail(
+      email
+    );
     if (existedUser) {
       throw new BadRequest('The email is already in use');
     }
 
     return response.status(200).json({
-      message: 'Email is OK, not in use'
+      message: 'Email is OK, not in use',
     });
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
@@ -133,8 +139,8 @@ export const deleteuser = async (
   next: NextFunction
 ) => {
   try {
-      const userPayload = request.user as UserDocument;
-      const foundUser = await usersService.deleteUser(userPayload._id);
+    const userPayload = request.user as UserDocument;
+    const foundUser = await usersService.deleteUser(userPayload._id);
     if (foundUser) {
       return response.sendStatus(204);
     }
@@ -156,7 +162,7 @@ export const updateUser = async (
   next: NextFunction
 ) => {
   try {
-    const user = PayLoad(request)
+    const user = PayLoad(request);
     const updatedUser = await usersService.updateUser(user._id, request.body);
     if (updatedUser) {
       return response.status(200).json(updatedUser);
@@ -204,7 +210,6 @@ export const userLogin = async (
   }
 };
 
-// #Woong
 export const googleLogin = async (
   request: Request,
   response: Response,
@@ -232,7 +237,6 @@ export const googleLogin = async (
   }
 };
 
-// #Woong
 export const forgetPassword = async (
   request: Request,
   response: Response,
@@ -255,7 +259,6 @@ export const forgetPassword = async (
       plainPasswordToReset
     );
     matchedUser.password = hashedPassword;
-    console.log('Temp passowrd:', plainPasswordToReset);
 
     const updatedUser: UserDocument | null = await usersService.resetPassword(
       matchedUser
@@ -277,7 +280,6 @@ export const forgetPassword = async (
   }
 };
 
-// #Woong
 export const updatePassword = async (
   request: Request,
   response: Response,

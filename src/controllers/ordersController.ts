@@ -1,14 +1,23 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 
-import { ApiError, BadRequest, ForbiddenError, InternalServerError, NotFoundError } from '../errors/ApiError';
+import {
+  ApiError,
+  BadRequest,
+  ForbiddenError,
+  InternalServerError,
+  NotFoundError,
+} from '../errors/ApiError';
 import OrderModel, { OrderDocument } from '../model/OrderModel';
 import ordersService from '../services/ordersService';
 import { Order } from '../misc/types/Order';
 import { UserDocument } from '../model/UserModel';
 
-// #Woong
-export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const orders: OrderDocument[] = await ordersService.getAllOrders();
     if (orders && orders.length > 0) {
@@ -18,17 +27,22 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
     throw new NotFoundError('No orders found');
   } catch (e) {
     if (e instanceof mongoose.Error.CastError) {
-      // from mongoose
       return next(new BadRequest('Wrong format to get orders'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Unkown error ouccured to find the orders'));
+    return next(
+      new InternalServerError('Unkown error ouccured to find the orders')
+    );
   }
 };
 
-export const getAllMyOrders = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllMyOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user: UserDocument | undefined = req.user as UserDocument | undefined;
     if (!user) {
@@ -43,25 +57,32 @@ export const getAllMyOrders = async (req: Request, res: Response, next: NextFunc
     throw new NotFoundError('No orders found');
   } catch (e) {
     if (e instanceof mongoose.Error.CastError) {
-      // from mongoose
       return next(new BadRequest('Wrong format to get orders'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Unkown error ouccured to find the orders'));
+    return next(
+      new InternalServerError('Unkown error ouccured to find the orders')
+    );
   }
 };
 
-export const getMyOrderById = async (req: Request, res: Response, next: NextFunction) => {
+export const getMyOrderById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user: UserDocument | undefined = req.user as UserDocument | undefined;
     if (!user) {
       throw new NotFoundError('User is not existed');
     }
-    
+
     const orderId: string = req.params.orderId;
-    const order: OrderDocument | null = await ordersService.getOrderyById(orderId);
+    const order: OrderDocument | null = await ordersService.getOrderyById(
+      orderId
+    );
     if (order) {
       return res.status(200).json(order);
     }
@@ -69,17 +90,22 @@ export const getMyOrderById = async (req: Request, res: Response, next: NextFunc
     throw new NotFoundError('No matched order with the id');
   } catch (e) {
     if (e instanceof mongoose.Error.CastError) {
-      // from mongoose
       return next(new BadRequest('Wrong id format'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Unkown error ouccured to find the order'));
+    return next(
+      new InternalServerError('Unkown error ouccured to find the order')
+    );
   }
 };
 
-export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
+export const createOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user: UserDocument | undefined = req.user as UserDocument | undefined;
     if (!user) {
@@ -98,8 +124,9 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
   } catch (e) {
     console.log(e);
     if (e instanceof mongoose.Error) {
-      // from mongoose
-      return next(new BadRequest(e.message ?? 'Wrong data format to create an order'));
+      return next(
+        new BadRequest(e.message ?? 'Wrong data format to create an order')
+      );
     } else if (e instanceof ApiError) {
       return next(e);
     }
@@ -108,8 +135,11 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-// #Woong
-export const updateOrder = async (req: Request, res: Response, next: NextFunction) => {
+export const updateOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user: UserDocument | undefined = req.user as UserDocument | undefined;
     if (!user) {
@@ -127,18 +157,24 @@ export const updateOrder = async (req: Request, res: Response, next: NextFunctio
   } catch (e) {
     console.log(e);
     if (e instanceof mongoose.Error.CastError) {
-      // from mongoose
-      return next(new BadRequest(e.message ?? 'Wrong data format to udpate order'));
+      return next(
+        new BadRequest(e.message ?? 'Wrong data format to udpate order')
+      );
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Unkown error ouccured to update the order'));
+    return next(
+      new InternalServerError('Unkown error ouccured to update the order')
+    );
   }
 };
 
-// #Woong
-export const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user: UserDocument | undefined = req.user as UserDocument | undefined;
     if (!user) {
@@ -146,7 +182,8 @@ export const deleteOrder = async (req: Request, res: Response, next: NextFunctio
     }
 
     const orderId: string = req.params.orderId;
-    const deletedOrder: OrderDocument | null = await ordersService.deleteOrderById(orderId);
+    const deletedOrder: OrderDocument | null =
+      await ordersService.deleteOrderById(orderId);
     if (deletedOrder) {
       return res.status(204).json();
     }
@@ -154,12 +191,13 @@ export const deleteOrder = async (req: Request, res: Response, next: NextFunctio
     throw new ForbiddenError('Deleting order is not allowed');
   } catch (e) {
     if (e instanceof mongoose.Error.CastError) {
-      // from mongoose
       return next(new BadRequest('Wrong data format to delete order'));
     } else if (e instanceof ApiError) {
       return next(e);
     }
 
-    return next(new InternalServerError('Unkown error ouccured to delete the order'));
+    return next(
+      new InternalServerError('Unkown error ouccured to delete the order')
+    );
   }
 };
