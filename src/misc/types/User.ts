@@ -1,14 +1,14 @@
 export enum UserRole {
   Customer = 'customer',
-  Admin = 'admin'
-};
+  Admin = 'admin',
+}
 
 export type User = {
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
-  userName: string;
+  username: string;
   role: UserRole;
   avatar: string;
   address: string;
@@ -16,6 +16,6 @@ export type User = {
 };
 
 export type UserActiveAndRole = {
-  role: UserRole,
-  active: boolean
-}
+  role: UserRole;
+  active: boolean;
+};

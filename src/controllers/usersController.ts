@@ -11,7 +11,7 @@ import {
 } from '../errors/ApiError';
 import { PasswordReset, PasswordUpdte } from '../misc/types/Password';
 import User, { UserDocument } from '../model/UserModel';
-import AuthUtil from '../misc/utils/AuthUtil';
+import AuthUtil from '../utils/AuthUtil';
 import { JwtTokens } from '../misc/types/JwtPayload';
 import { UserRole } from '../misc/types/User';
 
@@ -103,7 +103,7 @@ export const createUser = async (
   try {
     const { email, password } = request.body;
 
-    // if admin mail, force Role to be an admin
+    // if email is admin@mail, force Role to be an admin
     let role: UserRole = UserRole.Customer;
     if (email === 'admin@mail.com') {
       role = UserRole.Admin;
@@ -123,6 +123,7 @@ export const createUser = async (
 
     throw new ForbiddenError('Creating User is not allowed');
   } catch (error) {
+    // console.log('error', error);
     if (error instanceof mongoose.Error.CastError) {
       // from mongoose
       return next(new BadRequest('Wrong data format to create'));
@@ -187,6 +188,8 @@ export const userLogin = async (
   try {
     const { email, password } = request.body;
     const user: UserDocument | null = await usersService.getUserByEmail(email);
+    console.log('user', user);
+
     if (user) {
       const isMatched: boolean = await AuthUtil.comparePlainAndHashed(
         password,
@@ -198,6 +201,7 @@ export const userLogin = async (
       const tokens: JwtTokens = await AuthUtil.generateTokens(user);
       return response.status(200).json({ tokens, user });
     }
+
     throw new NotFoundError('User Not Found');
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
@@ -254,7 +258,7 @@ export const forgetPassword = async (
       );
     }
 
-    const plainPasswordToReset: string = `tempPasswordToReset_${matchedUser.firstName}`;
+    const plainPasswordToReset: string = `tempPasswordToReset_${matchedUser.firstname}`;
     const hashedPassword: string = await AuthUtil.getHashedAuth(
       plainPasswordToReset
     );

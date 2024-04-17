@@ -5,11 +5,11 @@ import { User } from '../misc/types/User';
 export type UserDocument = Document & User;
 
 const UserSchema = new mongoose.Schema({
-  firstName: {
+  firstname: {
     type: String,
     required: true,
   },
-  lastName: {
+  lastname: {
     type: String,
     required: true,
   },
@@ -22,9 +22,9 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  userName: {
+  username: {
     type: String,
-    required: true
+    required: true,
   },
   role: {
     type: String,
@@ -40,8 +40,8 @@ const UserSchema = new mongoose.Schema({
   },
   active: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 });
 
 export default mongoose.model<UserDocument>('User', UserSchema);

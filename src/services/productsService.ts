@@ -12,15 +12,15 @@ const getAllProducts = async (
     offset = 0,
     min_price,
     max_price,
-    name,
+    title,
     category,
     size,
   } = filterProduct;
 
   const query: FilterQuery<ProductDocument> = {};
 
-  if (name && name.trim().length > 0) {
-    query.name = { $regex: name, $options: 'i' };
+  if (title && title.trim().length > 0) {
+    query.title = { $regex: title, $options: 'i' };
   }
 
   if (min_price) {
@@ -42,7 +42,7 @@ const getAllProducts = async (
   const total: number = await Product.find(query).countDocuments();
   const products: ProductDocument[] = await Product.find(query)
     // TODO: We need to think about the price asc/desc
-    .sort({ name: 1 }) // shows product with name in ascending order
+    .sort({ title: 1 }) // shows product with title in ascending order
     .populate({ path: 'category' }) // shows category detail in the product data
     .limit(limit)
     .skip(offset)
@@ -61,9 +61,9 @@ const getAllProducts = async (
 const createNewProduct = async (
   product: ProductDocument
 ): Promise<ProductDocument> => {
-  const { name, description, price, images, category } = product;
+  const { title, description, price, images, category } = product;
 
-  if (!name || !description || !price || images.length === 0 || !category) {
+  if (!title || !description || !price || images.length === 0 || !category) {
     throw new BadRequest();
   }
 

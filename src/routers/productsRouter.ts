@@ -8,7 +8,7 @@ import {
   updateProduct,
 } from '../controllers/productsController';
 import adminCheck from '../middlewares/adminCheck';
-import { passportAuthenticate } from '../misc/utils/AuthUtil';
+import { passportAuthenticate } from '../utils/AuthUtil';
 
 const router = express.Router();
 

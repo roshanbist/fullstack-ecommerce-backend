@@ -6,30 +6,32 @@ import { Size } from '../misc/types/Size';
 export type ProductDocument = Document & Product;
 
 export const ProductSchema = new mongoose.Schema({
-  name: {
+  title: {
     type: String,
-    required: true
+    required: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
   price: {
     type: Number,
-    required: true
+    required: true,
   },
   images: {
     type: [String],
-    required: true
+    required: true,
   },
   category: {
     type: Schema.Types.ObjectId,
-    ref: 'Category'
+    ref: 'Category',
+    required: true,
   },
   size: {
-    type: String,
+    type: [String],
     enum: [Size.Small, Size.Medium, Size.Large],
-    default: Size.Medium
+    // required: true,
+    // default: [Size.Medium],
   },
 });
 

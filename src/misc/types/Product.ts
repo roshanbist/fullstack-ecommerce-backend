@@ -3,7 +3,7 @@ import { Category } from './Category';
 import { Size } from './Size';
 
 export type Product = {
-  name: string;
+  title: string;
   price: number;
   description: string;
   images: string[];
@@ -12,7 +12,7 @@ export type Product = {
 };
 
 export type FilterProduct = {
-  name?: string;
+  title?: string;
   limit?: number;
   offset?: number;
   min_price?: number;
