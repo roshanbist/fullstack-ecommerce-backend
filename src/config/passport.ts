@@ -29,6 +29,7 @@ export const jwtStrategy: JwtStrategy = new JwtStrategy(
       const user: UserDocument | null = await usersService.getUserByEmail(
         userEmail
       );
+
       if (user && user.active) {
         return done(null, user);
       }

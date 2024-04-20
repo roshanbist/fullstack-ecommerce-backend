@@ -14,14 +14,7 @@ import User, { UserDocument } from '../model/UserModel';
 import AuthUtil from '../utils/AuthUtil';
 import { JwtTokens } from '../misc/types/JwtPayload';
 import { UserRole } from '../misc/types/User';
-
-const PayLoad = (request: Request) => {
-  const userPayload = request.user as UserDocument | undefined;
-  if (!userPayload) {
-    throw new ForbiddenError('Need to login');
-  }
-  return userPayload;
-};
+import { getUserDetail } from '../utils/commonUtil';
 
 export const getAllUsers = async (
   request: Request,
@@ -40,6 +33,28 @@ export const getAllUsers = async (
     } else if (error instanceof ApiError) {
       return next(error);
     }
+    return next(new InternalServerError('Internal Server Error'));
+  }
+};
+
+export const getLoggedUserProfile = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const loggedUser = getUserDetail(request);
+
+    if (loggedUser) {
+      return response.status(200).json(loggedUser);
+    }
+
+    throw new ForbiddenError('No user found');
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return next(error);
+    }
+
     return next(new InternalServerError('Internal Server Error'));
   }
 };
@@ -73,6 +88,7 @@ export const checkEmail = async (
 ) => {
   try {
     const { email } = request.body;
+
     // Check email, if already in use
     const existedUser: UserDocument | null = await usersService.getUserByEmail(
       email
@@ -123,7 +139,6 @@ export const createUser = async (
 
     throw new ForbiddenError('Creating User is not allowed');
   } catch (error) {
-    // console.log('error', error);
     if (error instanceof mongoose.Error.CastError) {
       // from mongoose
       return next(new BadRequest('Wrong data format to create'));
@@ -163,8 +178,9 @@ export const updateUser = async (
   next: NextFunction
 ) => {
   try {
-    const user = PayLoad(request);
+    const user = getUserDetail(request);
     const updatedUser = await usersService.updateUser(user._id, request.body);
+
     if (updatedUser) {
       return response.status(200).json(updatedUser);
     }
@@ -172,7 +188,7 @@ export const updateUser = async (
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
       // from mongoose
-      return next(new BadRequest('Wrong data format to udpate'));
+      return next(new BadRequest('Wrong data format to update'));
     } else if (error instanceof ApiError) {
       return next(error);
     }
@@ -188,7 +204,6 @@ export const userLogin = async (
   try {
     const { email, password } = request.body;
     const user: UserDocument | null = await usersService.getUserByEmail(email);
-    console.log('user', user);
 
     if (user) {
       const isMatched: boolean = await AuthUtil.comparePlainAndHashed(

@@ -8,6 +8,7 @@ import {
   getAllUsers,
   updateUser,
   getSingleUserById,
+  getLoggedUserProfile,
   userLogin,
   googleLogin,
   checkEmail,
@@ -19,6 +20,7 @@ import adminCheck from '../middlewares/adminCheck';
 const router = express.Router();
 
 router.get('/', getAllUsers);
+router.get('/profile', passportAuthenticate(), getLoggedUserProfile);
 router.get('/:userId', getSingleUserById);
 
 router.post('/', createUser);
