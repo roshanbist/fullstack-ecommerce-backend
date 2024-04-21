@@ -30,7 +30,7 @@ export const ProductSchema = new mongoose.Schema({
   size: {
     type: [String],
     enum: [Size.Small, Size.Medium, Size.Large],
-    // required: true,
+    required: true,
     // default: [Size.Medium],
   },
 });
