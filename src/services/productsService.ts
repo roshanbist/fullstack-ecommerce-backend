@@ -15,6 +15,7 @@ const getAllProducts = async (
     title,
     category,
     size,
+    sort_title,
   } = filterProduct;
 
   const query: FilterQuery<ProductDocument> = {};
@@ -39,10 +40,17 @@ const getAllProducts = async (
     query.size = size;
   }
 
+  const sortTitleQuery: any = {};
+
+  if (sort_title) {
+    sortTitleQuery.title = sort_title === 'asc' ? 1 : -1;
+  }
+
   const total: number = await Product.find(query).countDocuments();
   const products: ProductDocument[] = await Product.find(query)
     // TODO: We need to think about the price asc/desc
-    .sort({ title: 1 }) // shows product with title in ascending order
+    // .sort({ title: 1 }) // shows product with title in ascending order
+    .sort(sortTitleQuery) // shows product with title in ascending order
     .populate({ path: 'category' }) // shows category detail in the product data
     .limit(limit)
     .skip(offset)

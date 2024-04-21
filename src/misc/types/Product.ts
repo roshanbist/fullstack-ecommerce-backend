@@ -19,6 +19,7 @@ export type FilterProduct = {
   max_price?: number;
   category?: string;
   size?: string;
+  sort_title?: string;
 };
 
 export type ProductsList = {
