@@ -8,8 +8,8 @@ const getAllProducts = async (
   filterProduct: Partial<FilterProduct>
 ): Promise<ProductsList> => {
   const {
-    limit = 0,
     offset = 0,
+    limit = 0,
     min_price,
     max_price,
     title,
@@ -19,6 +19,8 @@ const getAllProducts = async (
   } = filterProduct;
 
   const query: FilterQuery<ProductDocument> = {};
+
+  // console.log('limit', offset, limit);
 
   if (title && title.trim().length > 0) {
     query.title = { $regex: title, $options: 'i' };
@@ -48,7 +50,6 @@ const getAllProducts = async (
 
   const total: number = await Product.find(query).countDocuments();
   const products: ProductDocument[] = await Product.find(query)
-    // TODO: We need to think about the price asc/desc
     // .sort({ title: 1 }) // shows product with title in ascending order
     .sort(sortTitleQuery) // shows product with title in ascending order
     .populate({ path: 'category' }) // shows category detail in the product data

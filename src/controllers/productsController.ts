@@ -18,6 +18,7 @@ export async function getAllProducts(
 ) {
   try {
     const filterProduct: Partial<FilterProduct> = request.query;
+    // console.log('offset from be', filterProduct);
     const productsList: ProductsList = await productsService.getAllProducts(
       filterProduct
     );

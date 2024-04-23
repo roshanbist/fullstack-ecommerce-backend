@@ -12,14 +12,14 @@ export type Product = {
 };
 
 export type FilterProduct = {
-  title?: string;
-  limit?: number;
-  offset?: number;
-  min_price?: number;
-  max_price?: number;
-  category?: string;
-  size?: string;
-  sort_title?: string;
+  title: string;
+  limit: number;
+  offset: number;
+  min_price: number;
+  max_price: number;
+  category: string;
+  size: string;
+  sort_title: string;
 };
 
 export type ProductsList = {
