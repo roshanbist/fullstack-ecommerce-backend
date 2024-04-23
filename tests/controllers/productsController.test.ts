@@ -3,13 +3,16 @@ import request from 'supertest';
 import connect, { MongoHelper } from '../db-helper';
 import app from '../../src/app';
 import { Product } from '../../src/misc/types/Product';
-import { createUser, createUserAndLoginAndGetAccessToken } from '../utils/testUtil';
+import {
+  createUser,
+  createUserAndLoginAndGetAccessToken,
+} from '../utils/testUtil';
 import { UserRole } from '../../src/misc/types/User';
 import { ProductDocument } from '../../src/model/ProductModel';
 import { createCategory } from './categoriesController.test';
 
 export const productData: Partial<Product> = {
-  name: 'product1',
+  title: 'product1',
   description: 'product1 available',
   price: 10,
   images: ['product1 image1', 'product1 image2'],
@@ -17,7 +20,7 @@ export const productData: Partial<Product> = {
 
 export function getProductData(data: Partial<Product>, categoryId: string) {
   return {
-    name: data.name,
+    title: data.title,
     description: data.description,
     price: data.price,
     images: data.images,
@@ -89,7 +92,7 @@ describe('product controller test', () => {
     // create user, login user and get access token
     // First user is always admin
     // Create second user
-    await createUser(UserRole.Admin, { email: 'admin@mail.com'});
+    await createUser(UserRole.Admin, { email: 'admin@mail.com' });
     const accessToken: string = await createUserAndLoginAndGetAccessToken(
       UserRole.Customer
     );
@@ -127,7 +130,7 @@ describe('product controller test', () => {
     );
 
     expect(singleProductData.status).toBe(200);
-    expect(singleProductData.body).toHaveProperty('name', product.name);
+    expect(singleProductData.body).toHaveProperty('title', product.title);
     expect(singleProductData.body).toHaveProperty(
       'description',
       product.description
@@ -152,7 +155,7 @@ describe('product controller test', () => {
     const productResponseData: ProductDocument = productResponse.body;
 
     const productUpdateData: Partial<ProductDocument> = {
-      name: 'Product1 new name',
+      title: 'Product1 new name',
       price: 50,
     };
 
@@ -163,7 +166,7 @@ describe('product controller test', () => {
 
     expect(productUpdateResponse.status).toBe(200);
     expect(productUpdateResponse.body).toMatchObject({
-      name: productUpdateData.name,
+      title: productUpdateData.title,
       price: productUpdateData.price,
       _id: productResponseData._id,
       __v: productResponseData.__v,

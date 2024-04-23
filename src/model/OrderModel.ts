@@ -9,26 +9,28 @@ export const OrderSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
   },
-  items: [{
-    type: OrderItemSchema,
-    required: true 
-  }],
+  items: [
+    {
+      type: OrderItemSchema,
+      required: true,
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now(),
-    required: true
+    required: true,
   },
   totalPrice: {
     type: Number,
     default: 0,
-    required: true
+    required: true,
   },
-  shippingAddress: {
-    type: String,
-    required: true
-  }
+  // shippingAddress: {
+  //   type: String,
+  //   required: true
+  // }
 });
 
 export default mongoose.model<OrderDocument>('Order', OrderSchema);
