@@ -9,7 +9,7 @@ import {
   InternalServerError,
   NotFoundError,
 } from '../errors/ApiError';
-import { PasswordReset, PasswordUpdte } from '../misc/types/Password';
+import { PasswordReset, PasswordUpdate } from '../misc/types/Password';
 import User, { UserDocument } from '../model/UserModel';
 import AuthUtil from '../utils/AuthUtil';
 import { JwtTokens } from '../misc/types/JwtPayload';
@@ -305,12 +305,12 @@ export const updatePassword = async (
   next: NextFunction
 ) => {
   try {
-    const updateInfo: PasswordUpdte = request.body;
+    const updateInfo: PasswordUpdate = request.body;
     const user: UserDocument | undefined = request.user as
       | UserDocument
       | undefined;
     if (!user) {
-      throw new ForbiddenError('User is undefined, need to login');
+      throw new ForbiddenError('User not found, please login');
     }
 
     const matched: boolean = await AuthUtil.comparePlainAndHashed(
@@ -318,7 +318,7 @@ export const updatePassword = async (
       user.password
     );
     if (!matched) {
-      throw new BadRequest('The passowrd is not matched');
+      throw new BadRequest('Password did not match');
     }
 
     user.password = await AuthUtil.getHashedAuth(updateInfo.newPassword);

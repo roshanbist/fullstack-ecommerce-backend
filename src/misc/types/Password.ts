@@ -1,8 +1,8 @@
 export type PasswordReset = {
   userEmail: string;
-}
+};
 
-export type PasswordUpdte = {
+export type PasswordUpdate = {
   oldPassword: string;
   newPassword: string;
-}
+};
