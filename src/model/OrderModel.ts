@@ -27,10 +27,10 @@ export const OrderSchema = new Schema({
     default: 0,
     required: true,
   },
-  // shippingAddress: {
-  //   type: String,
-  //   required: true
-  // }
+  shippingAddress: {
+    type: String,
+    required: true,
+  },
 });
 
 export default mongoose.model<OrderDocument>('Order', OrderSchema);
