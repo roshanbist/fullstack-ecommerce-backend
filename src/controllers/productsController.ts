@@ -22,7 +22,7 @@ export async function getAllProducts(
     const productsList: ProductsList = await productsService.getAllProducts(
       filterProduct
     );
-    response.status(200).json(productsList);
+    return response.status(200).json(productsList);
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {
       return next(
@@ -45,7 +45,13 @@ export async function createNewProduct(
   next: NextFunction
 ) {
   try {
+    const { categoryId } = request.body;
     const newData = new Product(request.body);
+
+    if (categoryId) {
+      newData.category = categoryId;
+    }
+
     const newProductData = await productsService.createNewProduct(newData);
     response.status(201).json(newProductData);
   } catch (error) {
@@ -70,7 +76,12 @@ export async function updateProduct(
   next: NextFunction
 ) {
   try {
+    const { categoryId } = request.body;
+
     const newData: Partial<ProductDocument> = request.body;
+    if (categoryId) {
+      newData.category = categoryId;
+    }
     const updatedProduct = await productsService.updateProduct(
       request.params.productId,
       newData
@@ -122,7 +133,9 @@ export async function deleteProductById(
 ) {
   try {
     const productId = request.params.productId;
+
     await productsService.deleteProductById(productId);
+
     response.sendStatus(204);
   } catch (error) {
     if (error instanceof NotFoundError) {

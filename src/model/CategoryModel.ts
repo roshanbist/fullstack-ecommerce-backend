@@ -8,7 +8,7 @@ export const CategorySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    default: 'Default Category',
+    default: 'Miscellaneous',
     unique: true,
   },
   image: {

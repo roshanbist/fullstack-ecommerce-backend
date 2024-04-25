@@ -70,9 +70,16 @@ const getAllProducts = async (
 const createNewProduct = async (
   product: ProductDocument
 ): Promise<ProductDocument> => {
-  const { title, description, price, images, category } = product;
+  const { title, description, price, images, category, size } = product;
 
-  if (!title || !description || !price || images.length === 0 || !category) {
+  if (
+    !title ||
+    !description ||
+    !price ||
+    images.length === 0 ||
+    !category ||
+    size.length === 0
+  ) {
     throw new BadRequest();
   }
 
@@ -108,6 +115,8 @@ const getProductById = async (id: string): Promise<ProductDocument> => {
 
 const deleteProductById = async (id: string) => {
   const foundProduct = await Product.findByIdAndDelete(id);
+
+  console.log('foundProduct', foundProduct);
 
   if (!foundProduct) {
     throw new NotFoundError();
