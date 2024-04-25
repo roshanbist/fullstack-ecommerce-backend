@@ -306,12 +306,14 @@ export const updatePassword = async (
 ) => {
   try {
     const updateInfo: PasswordUpdate = request.body;
-    const user: UserDocument | undefined = request.user as
-      | UserDocument
-      | undefined;
-    if (!user) {
-      throw new ForbiddenError('User not found, please login');
-    }
+    // const user: UserDocument | undefined = request.user as
+    //   | UserDocument
+    //   | undefined;
+    // if (!user) {
+    //   throw new ForbiddenError('User not found, please login');
+    // }
+
+    const user: UserDocument = getUserDetail(request);
 
     const matched: boolean = await AuthUtil.comparePlainAndHashed(
       updateInfo.oldPassword,
