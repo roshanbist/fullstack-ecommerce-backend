@@ -199,12 +199,13 @@ export const deleteOrder = async (
     //   throw new NotFoundError('User is not existed');
     // }
 
-    const orderId: string = req.params.orderId;
+    const orderId = req.params.orderId as string;
     const deletedOrder: OrderDocument | null =
       await ordersService.deleteOrderById(orderId);
 
     if (deletedOrder) {
-      return res.status(204).json();
+      // return res.status(204).json();
+      return res.sendStatus(204);
     }
 
     throw new ForbiddenError('Deleting order is not allowed');
