@@ -116,7 +116,7 @@ const getProductById = async (id: string): Promise<ProductDocument> => {
 const deleteProductById = async (id: string) => {
   const foundProduct = await Product.findByIdAndDelete(id);
 
-  console.log('foundProduct', foundProduct);
+  // console.log('foundProduct', foundProduct);
 
   if (!foundProduct) {
     throw new NotFoundError();

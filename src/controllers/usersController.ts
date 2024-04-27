@@ -155,11 +155,17 @@ export const deleteuser = async (
   next: NextFunction
 ) => {
   try {
-    const userPayload = request.user as UserDocument;
-    const foundUser = await usersService.deleteUser(userPayload._id);
-    if (foundUser) {
+    // const userPayload = request.user as UserDocument;
+    const userId: string = request.params.userId;
+
+    const deletedUser: UserDocument | null = await usersService.deleteUser(
+      userId
+    );
+
+    if (deletedUser) {
       return response.sendStatus(204);
     }
+
     throw new ForbiddenError('Delete User is not allowed');
   } catch (error) {
     if (error instanceof mongoose.Error.CastError) {

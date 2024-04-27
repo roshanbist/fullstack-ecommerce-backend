@@ -19,7 +19,7 @@ import adminCheck from '../middlewares/adminCheck';
 
 const router = express.Router();
 
-router.get('/', getAllUsers);
+router.get('/', passportAuthenticate(), adminCheck, getAllUsers);
 router.get('/profile', passportAuthenticate(), getLoggedUserProfile);
 router.get('/:userId', getSingleUserById);
 

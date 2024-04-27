@@ -3,10 +3,12 @@ import OrderModel, { OrderDocument } from '../model/OrderModel';
 const getAllOrders = async (userId: string): Promise<OrderDocument[]> => {
   const orders: OrderDocument[] = await OrderModel.find({
     user: userId,
-  }).populate([
-    { path: 'user', select: { _id: 0, password: 0 } },
-    { path: 'items.category' },
-  ]);
+  })
+    .sort({ createdAt: -1 })
+    .populate([
+      { path: 'user', select: { _id: 0, password: 0 } },
+      { path: 'items.category' },
+    ]);
 
   return orders;
 };
@@ -23,15 +25,6 @@ const getOrderyById = async (
 
   return order;
 };
-
-// const getMyOrders = async (userId: string): Promise<OrderDocument[]> => {
-//   return await OrderModel.find({
-//     user: userId,
-//   }).populate([
-//     { path: 'user', select: { _id: 0, password: 0 } },
-//     { path: 'items.product.category' },
-//   ]);
-// };
 
 const createOrder = async (order: OrderDocument): Promise<OrderDocument> => {
   return await order.save();
