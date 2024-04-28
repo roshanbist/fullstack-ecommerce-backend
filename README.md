@@ -1,28 +1,36 @@
-# E-commerce API
+# Fullstack E-commerce Backend
 
-The backend module is a part of Fullstack project at Integrify 2024.
+This backend module is a part of Fullstack project at Integrify 2024. It encompasses collection of APIs aimed to meeth the diverse needs of E-commerce application. From user and product management to order processing, these REST APIs offer seamless functionality for a better user experience. The data are stored in MongoDB database, ensuring security and reliability. Each entity basically have a CRUD(Create, Read, Update, Delete) operations but also an authorized access for ADMIN to manage every aspect of this module. Authentication is handled using JSON Web Tokens (JWT).
 
-This backend encompasses collection of APIs aimed to meeth the diverse needs of Ecommerce application. From user and product mangement to order processing, these REST APIs offer seamless functionality for a better user experience. The data are stored in MongoDB database, ensuring security and reliability.
+This module is built with Typescript, Node, Express and MongoDB.
 
-Each entity basically have a CRUD(Create, Read, Update, Delete) operations but also a special access only for ADMIN.
+## Table of Contents
 
-This is built with Typescript, Node, Express and MongoDB.
+- [Fullstack E-commerce Backend](#fullstack-e-commerce-backend)
+- [Entity Relationship Diagram](#entity-relationship-diagram)
+- [Getting Started](#getting-started)
+- [Project Folder Structure](#project-folder-structure)
+- [Used Package Script](#package-scripts)
+- [Features](#features)
+- [Testing](#testing)
+- [Deployment](#deployment)
 
-## Introduction
+## Entity Relationship Diagram
 
 ![ERD Diagram](./src/assets/images/ERD-ECOMMERCE.png)
 
-We have structured base entities
+#### Entities
 
-- Users
+- **Users**
+- **Products**
+- **Categories**
+- **Orders**
+- **Order Item**
 
-- Products
+### Enum
 
-- Categories
-
-- Orders
-
-- OrderItems
+- **Size**
+- **UserRole**
 
 ## Getting started
 
@@ -36,8 +44,8 @@ Make sure you have [npm](https://www.npmjs.com/get-npm) installed globally.
 #### 1.Clone the project:
 
 ```bash
-$ git clone https://github.com/Woongsik/e-commerce-api.git
-$ cd e-commerce-api
+$ git clone https://github.com/roshanbist/fullstack-e-commerce-api.git
+$ cd fullstack-e-commerce-api
 ```
 
 #### 2.Install and run:
@@ -47,20 +55,88 @@ $ npm install    # Install project dependencies
 $ npm run start  # Compile and launch on local environment
 ```
 
-#### 3. Navigate to [http://localhost:8080](http://localhost:8080)
+#### 3. Navigate to [http://localhost:{yourPortAdressForBackend}](http://localhost:8080)
+
+## Project Folder Structure
+
+```
+└── 📁src
+    └── .DS_Store
+    └── app.ts
+    └── 📁assets
+        └── 📁images
+            └── ERD-ECOMMERCE.png
+    └── 📁config
+        └── email.ts
+        └── passport.ts
+    └── 📁controllers
+        └── adminController.ts
+        └── categoriesController.ts
+        └── ordersController.ts
+        └── productsController.ts
+        └── usersController.ts
+    └── 📁errors
+        └── ApiError.ts
+    └── 📁middlewares
+        └── adminCheck.ts
+        └── apiErrorHandlerMiddleware.ts
+    └── 📁misc
+        └── 📁types
+            └── Category.ts
+            └── GoogleCredential.ts
+            └── JwtPayload.ts
+            └── Order.ts
+            └── Passport.ts
+            └── Password.ts
+            └── Product.ts
+            └── Size.ts
+            └── User.ts
+    └── 📁model
+        └── CategoryModel.ts
+        └── OrderItemModel.ts
+        └── OrderModel.ts
+        └── ProductModel.ts
+        └── UserModel.ts
+    └── 📁routers
+        └── adminRouter.ts
+        └── categoriesRouter.ts
+        └── orderRouter.ts
+        └── productsRouter.ts
+        └── usersRouter.ts
+    └── server.ts
+    └── 📁services
+        └── categoriesService.ts
+        └── ordersService.ts
+        └── productsService.ts
+        └── usersService.ts
+    └── 📁utils
+        └── AuthUtil.ts
+        └── commonUtil.ts
+```
+
+## Used Package Scripts
+
+```bash
+    "scripts": {
+    "start": "node dist/server.js",
+    "dev": "nodemon --watch src/**/*.ts --exec ts-node src/server.ts",
+    "build": "tsc -p .",
+    "test": "jest --runInBand --forceExit --detectOpenHandles --coverage  --verbose false"
+    }
+```
 
 ## Authentication
 
-For security, this API should implement user authentication using JSON Web Tokens (JWT).
-Each user should have a unique username and password OR broker authentication. Certain admin endpoints may require special privileges for access.
+This REST API implement user authentication using JSON Web Tokens (JWT).
 
 ## Features
 
 1.  Products
 
     - Get list of all products with/without pagination(limit, offset)
-    - Get list of products, filtering (search) by: name, categories, size
-    - Get a product by product id
+    - Filtered the products by: title, categories, price range
+    - Get list of sorted products by title (ASC, DESC)
+    - Get details of a product by its product id
 
 2.  Categories
 
@@ -72,40 +148,16 @@ Each user should have a unique username and password OR broker authentication. C
     - Sign up a new user (username, password, first name, last name, email, address)
     - Sign in user with email/password
     - Update user profile (first name, last name, email)
-    - Forget password request
     - Change password (username, old password, new password)
 
 4.  Order
 
-    - Get list of all orders
     - Get list of all user's order
     - Get a user's order by order ID
 
 5.  Admin
-    - Change a User's role to Admin or Customer,
-    - Change a User's active to Active or Inactive
-    - Create a new category, update, remove
-    - Create a new product, update, remove
-
-### Additional Features
-
-      1. Welcoming email
-         - When new user is registered, welcoming email is sent
-         - [Mailersend](https://www.mailersend.com/)
-
-      2. Google account login
-         - User is able to use their google account to login/registeration
-         - Welcoming email generate an initial password for email/passowrd login
-
-      3. Email check if already in use
-         - Email address will be checked if it is in use already before sending all user info for registration
-
-      4. Admin check
-         - The Admin role will be given only accpeted/registered email
-         - ie.
-            ```bash
-               admin@mail.com (just for testing purpose in the project)
-            ```
+    - Get CRUD operation of product
+    - Get CRUD operation of caetgory
 
 ## Testing
 
@@ -117,7 +169,23 @@ For the testing, Jest, Supertest, MongoDB memory server are used.
 
 - [MongoDB memory server](https://www.npmjs.com/package/mongodb-memory-server)
 
-Check test code in src/tests
+Testing of the backend module includes:
+
+- Controllers
+  - productsController.test.ts
+  - categoriesController.test.ts
+  - usersController.test.ts
+- Middlewares
+  - adminCheck.spec.ts
+- Services
+
+  - productsService.test.ts
+  - categoreisService.test.ts
+  - usersService.test.ts
+
+![Test result](./src/assets/images/backend-testing.png)
+
+Check test code in tests folder
 
 ```bash
 $ npm run test
@@ -127,9 +195,3 @@ $ npm run test
 
 The API is live now hosted by RENDER.
 Check the live link here [https://fs17-backend-b5i2.onrender.com](https://fs17-backend-b5i2.onrender.com)
-
-- Some examples
-  - [All products](https://fs17-backend-b5i2.onrender.com/api/v1/products)
-  - [All categories](https://fs17-backend-b5i2.onrender.com/api/v1/categories)
-  - [All orders](https://fs17-backend-b5i2.onrender.com/api/v1/orders)
-  - [All users](https://fs17-backend-b5i2.onrender.com/api/v1/users)
