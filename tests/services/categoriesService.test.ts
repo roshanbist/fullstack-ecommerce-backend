@@ -1,18 +1,21 @@
-import request from 'supertest';
+// import request from 'supertest';
 import connect, { MongoHelper } from '../db-helper';
 
-import app from '../../src/app';
+// import app from '../../src/app';
 import categoriesService from '../../src/services/categoriesService';
 import CategoryModel, { CategoryDocument } from '../../src/model/CategoryModel';
-import { getCategoryData } from '../controllers/categoriesController.test';
+// import { getCategoryData } from '../controllers/categoriesController.test';
+import { getCategoryData } from '../utils/controllerUtil';
+import { UserRole } from '../../src/misc/types/User';
 import { Category } from '../../src/misc/types/Category';
+import { createCategoryInService } from '../utils/serviceUtil';
 
 // createCategory
-export async function createCategory(): Promise<CategoryDocument> {
-  const categoryData: Category = getCategoryData();
-  const category: CategoryDocument = new CategoryModel(categoryData);
-  return await categoriesService.createCategory(category);
-}
+// export async function createCategory(): Promise<CategoryDocument> {
+//   const categoryData: Category = getCategoryData();
+//   const category: CategoryDocument = new CategoryModel(categoryData);
+//   return await categoriesService.createCategory(category);
+// }
 
 //tear down
 describe('category service test', () => {
@@ -32,7 +35,7 @@ describe('category service test', () => {
 
   // get all categories
   it('should return a list of categories', async () => {
-    const category: CategoryDocument = await createCategory();
+    const category: CategoryDocument = await createCategoryInService();
 
     const categoryList = await categoriesService.getAllCategories();
     expect(categoryList.length).toEqual(1);
@@ -45,7 +48,7 @@ describe('category service test', () => {
   });
 
   it('should return a category with categoryId', async () => {
-    const category: CategoryDocument = await createCategory();
+    const category: CategoryDocument = await createCategoryInService();
     const foundCategory: CategoryDocument | null =
       await categoriesService.getCategoryById(category._id);
 
@@ -58,7 +61,7 @@ describe('category service test', () => {
   });
 
   it('should create a category', async () => {
-    const category: CategoryDocument = await createCategory();
+    const category: CategoryDocument = await createCategoryInService();
     expect(category).toHaveProperty('_id');
     expect(category).toHaveProperty('name');
     expect(category).toHaveProperty('image');
@@ -66,7 +69,7 @@ describe('category service test', () => {
   });
 
   it('should update a category', async () => {
-    const category: CategoryDocument = await createCategory();
+    const category: CategoryDocument = await createCategoryInService();
     const categoryUpdateData: Partial<Category> = {
       name: 'updated name',
       image: 'http://updatedImage.png',
@@ -83,7 +86,7 @@ describe('category service test', () => {
   });
 
   it('should delete a category', async () => {
-    const category: CategoryDocument = await createCategory();
+    const category: CategoryDocument = await createCategoryInService();
     const deletedCategory: CategoryDocument | null =
       await categoriesService.deleteCategoryById(category._id);
     expect(deletedCategory).toMatchObject({

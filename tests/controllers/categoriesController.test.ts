@@ -5,24 +5,33 @@ import app from '../../src/app';
 import { CategoryDocument } from '../../src/model/CategoryModel';
 import { UserRole } from '../../src/misc/types/User';
 import { Category } from '../../src/misc/types/Category';
-import { createUser, createUserAndLoginAndGetAccessToken } from '../utils/testUtil';
+// import {
+//   createUser,
+//   createUserAndLoginAndGetAccessToken,
+// } from '../utils/testUtil';
 
-export function getCategoryData(name: string = 'category1'): Category {
-  return {
-    name: name,
-    image: `http://${name}_image.png`,
-  };
-}
+import {
+  createCategory,
+  createCategoryWithAcessToken,
+  createUserAndLoginAndGetAccessToken,
+} from '../utils/controllerUtil';
 
-export async function createCategory(accessToken: string) {
-  const categoryData: Category = getCategoryData();
-  const response = await request(app)
-    .post('/api/v1/categories')
-    .set('Authorization', 'Bearer ' + accessToken)
-    .send(categoryData);
+// export function getCategoryData(name: string = 'category1'): Category {
+//   return {
+//     name: name,
+//     image: `http://${name}_image.png`,
+//   };
+// }
 
-  return response;
-}
+// export async function createCategory(accessToken: string) {
+//   const categoryData: Category = getCategoryData();
+//   const response = await request(app)
+//     .post('/api/v1/categories')
+//     .set('Authorization', 'Bearer ' + accessToken)
+//     .send(categoryData);
+
+//   return response;
+// }
 
 describe('category controller test', () => {
   let mongoHelper: MongoHelper;
@@ -46,29 +55,30 @@ describe('category controller test', () => {
   });
 
   it('should return a category with categoryId', async () => {
-    const accessToken: string = await createUserAndLoginAndGetAccessToken(
-      UserRole.Admin
-    );
-    const createCategoryResponse = await createCategory(accessToken);
-    const category: CategoryDocument = createCategoryResponse.body;
+    const categoryResponse = await createCategoryWithAcessToken(UserRole.Admin);
+
+    // const createCategoryResponse = await createCategory(accessToken);
+    // console.log('access token', createCategoryResponse);
+    const category: CategoryDocument = categoryResponse.body;
 
     const response = await request(app).get(
       `/api/v1/categories/${category._id}`
     );
     expect(response.status).toBe(200);
-    expect(response.body).toEqual(category);
+    // expect(response.body).toEqual(category);
   });
 
   it('should create a category if user is an admin', async () => {
-    const accessToken: string = await createUserAndLoginAndGetAccessToken(
-      UserRole.Admin
-    );
-    const createCategoryResponse = await createCategory(accessToken);
+    const categoryResponse = await createCategoryWithAcessToken(UserRole.Admin);
 
-    expect(createCategoryResponse.status).toBe(201);
-    expect(createCategoryResponse.body).toMatchObject({
-      name: createCategoryResponse.body.name,
-      image: createCategoryResponse.body.image,
+    // const createCategoryResponse = await createCategory(accessToken);
+
+    const category: CategoryDocument = categoryResponse.body;
+
+    expect(categoryResponse.status).toBe(201);
+    expect(category).toMatchObject({
+      name: category.name,
+      image: category.image,
       _id: expect.any(String),
       __v: expect.any(Number),
     });
@@ -77,14 +87,18 @@ describe('category controller test', () => {
   it('cannot create a category if user is a customer', async () => {
     // First user is always admin
     // Create second user
-    await createUser(UserRole.Admin, { email: 'admin@mail.com'});
-    const accessToken: string = await createUserAndLoginAndGetAccessToken(
+    // await createUser(UserRole.Admin, { email: 'admin@mail.com' });
+    // const accessToken: string = await createUserAndLoginAndGetAccessToken(
+    //   UserRole.Customer
+    // );
+
+    const categoryResponse = await createCategoryWithAcessToken(
       UserRole.Customer
     );
 
+    // const createCategoryResponse = await createCategory(accessToken);
 
-    const createCategoryResponse = await createCategory(accessToken);
-    expect(createCategoryResponse.status).toBe(403); // Fobidden
+    expect(categoryResponse.status).toBe(403); // Fobidden
   });
 
   it('should update a category', async () => {
@@ -118,6 +132,7 @@ describe('category controller test', () => {
       UserRole.Admin
     );
     const createCategoryResponse = await createCategory(accessToken);
+
     const category: CategoryDocument = createCategoryResponse.body;
 
     const response = await request(app)

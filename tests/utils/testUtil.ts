@@ -15,24 +15,31 @@ const userAuth = {
 };
 
 const user: Partial<User> = {
-  firstName: 'firstName',
-  lastName: 'lastName',
-  userName: 'userName',
+  firstname: 'firstName',
+  lastname: 'lastName',
+  username: 'userName',
   avatar: 'http://avatar.png',
   address: 'address',
   active: true,
-  ...userAuth
+  ...userAuth,
 };
 
-export async function createUser(role: UserRole = UserRole.Customer, customerUser: Partial<User> | null = null) {
-  return await request(app).post('/api/v1/users').send({ ...user, ...customerUser, role });
-};
+export async function createUser(
+  role: UserRole = UserRole.Customer,
+  customerUser: Partial<User> | null = null
+) {
+  return await request(app)
+    .post('/api/v1/users')
+    .send({ ...user, ...customerUser, role });
+}
 
 export async function login() {
   return await request(app).post('/api/v1/users/login').send(userAuth);
 }
 
-export async function createUserAndLoginAndGetAccessToken(role: UserRole = UserRole.Customer): Promise<string> {
+export async function createUserAndLoginAndGetAccessToken(
+  role: UserRole = UserRole.Customer
+): Promise<string> {
   await createUser(role);
   const loggedinInfo = await login();
   const tokens: JwtTokens = loggedinInfo.body.tokens;

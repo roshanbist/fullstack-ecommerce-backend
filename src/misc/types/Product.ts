@@ -7,8 +7,9 @@ export type Product = {
   price: number;
   description: string;
   images: string[];
-  size: Size;
-  category: Category;
+  size: Size[];
+  // category: Category;
+  category: string;
 };
 
 export type FilterProduct = {

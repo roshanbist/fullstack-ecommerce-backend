@@ -349,7 +349,7 @@ export const updatePassword = async (
     }
 
     return next(
-      new InternalServerError('Rest password failed with unknown error')
+      new InternalServerError('Reset password failed with unknown error')
     );
   }
 };
