@@ -1,0 +1,8 @@
+#MongoDB
+MONGODB_URL=
+
+#Application port
+PORT=
+
+#Passport JWT
+JWT_SECRET=
