@@ -44,8 +44,8 @@ Make sure you have [npm](https://www.npmjs.com/get-npm) installed globally.
 #### 1.Clone the project:
 
 ```bash
-$ git clone https://github.com/roshanbist/fullstack-e-commerce-api.git
-$ cd fullstack-e-commerce-api
+$ git clone https://github.com/roshanbist/fullstack-ecommerce-backend.git
+$ cd fullstack-ecommerce-backend
 ```
 
 #### 2.Install and run:
@@ -194,4 +194,4 @@ $ npm run test
 ## Deployment
 
 The API is live now hosted by RENDER.
-Check the live link here [https://fs17-backend-b5i2.onrender.com](https://fs17-backend-b5i2.onrender.com)
+Check the live link here
