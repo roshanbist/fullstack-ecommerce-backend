@@ -10,7 +10,7 @@ This module is built with Typescript, Node, Express and MongoDB.
 - [Entity Relationship Diagram](#entity-relationship-diagram)
 - [Getting Started](#getting-started)
 - [Project Folder Structure](#project-folder-structure)
-- [Used Package Script](#package-scripts)
+- [Used Package Script](#used-package-scripts)
 - [Features](#features)
 - [Testing](#testing)
 - [Deployment](#deployment)
