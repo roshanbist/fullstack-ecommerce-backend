@@ -1,5 +1,4 @@
 import { ProductDocument } from '../../model/ProductModel';
-import { Category } from './Category';
 import { Size } from './Size';
 
 export type Product = {
@@ -8,7 +7,6 @@ export type Product = {
   description: string;
   images: string[];
   size: Size[];
-  // category: Category;
   category: string;
 };
 

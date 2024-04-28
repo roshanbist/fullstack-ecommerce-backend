@@ -20,8 +20,6 @@ const getAllProducts = async (
 
   const query: FilterQuery<ProductDocument> = {};
 
-  // console.log('limit', offset, limit);
-
   if (title && title.trim().length > 0) {
     query.title = { $regex: title, $options: 'i' };
   }
@@ -50,7 +48,6 @@ const getAllProducts = async (
 
   const total: number = await Product.find(query).countDocuments();
   const products: ProductDocument[] = await Product.find(query)
-    // .sort({ title: 1 }) // shows product with title in ascending order
     .sort(sortTitleQuery) // shows product with title in ascending order
     .populate({ path: 'category' }) // shows category detail in the product data
     .limit(limit)
@@ -115,8 +112,6 @@ const getProductById = async (id: string): Promise<ProductDocument> => {
 
 const deleteProductById = async (id: string) => {
   const foundProduct = await Product.findByIdAndDelete(id);
-
-  // console.log('foundProduct', foundProduct);
 
   if (!foundProduct) {
     throw new NotFoundError();

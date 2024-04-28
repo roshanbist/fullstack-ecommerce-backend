@@ -3,48 +3,15 @@ import request from 'supertest';
 import connect, { MongoHelper } from '../db-helper';
 import app from '../../src/app';
 import { Product } from '../../src/misc/types/Product';
-// import {
-//   createUser,
-//   createUserAndLoginAndGetAccessToken,
-// } from '../utils/testUtil';
+
 import { UserRole } from '../../src/misc/types/User';
 import { ProductDocument } from '../../src/model/ProductModel';
 import {
   createCategory,
   createUserAndLoginAndGetAccessToken,
   createProductAndCategoryWithAuth,
-  getProductData,
   createProduct,
 } from '../utils/controllerUtil';
-
-// export const productData: Partial<Product> = {
-//   title: 'product1',
-//   description: 'product1 available',
-//   price: 10,
-//   images: ['product1 image1', 'product1 image2'],
-// };
-
-// export function getProductData(data: Partial<Product>, categoryId: string) {
-//   return {
-//     title: data.title,
-//     description: data.description,
-//     price: data.price,
-//     images: data.images,
-//     category: categoryId,
-//   };
-// }
-
-// async function createProduct(accessToken: string, categoryId: string) {
-//   const productNewData = getProductData(productData, categoryId);
-//   const response = await request(app)
-//     .post('/api/v1/products')
-//     .set('Authorization', 'Bearer ' + accessToken)
-//     .send(productNewData);
-
-//   console.log('response k aayo', response.body);
-
-//   return response;
-// }
 
 describe('product controller test', () => {
   let mongoHelper: MongoHelper;
@@ -73,20 +40,6 @@ describe('product controller test', () => {
   });
 
   it('should create a product if user is admin', async () => {
-    // create user, login user and get access token
-    // const accessToken: string = await createUserAndLoginAndGetAccessToken(
-    //   UserRole.Admin
-    // );
-
-    // create category
-    // const categoryData = await createCategory(accessToken);
-
-    // pass access token to create a product
-    // const productResponse = await createProduct(
-    //   accessToken,
-    //   categoryData.body._id
-    // );
-
     const productResponse = await createProductAndCategoryWithAuth(
       UserRole.Admin
     );
@@ -101,23 +54,6 @@ describe('product controller test', () => {
   });
 
   it('should not create a product if user is customer', async () => {
-    // create user, login user and get access token
-    // First user is always admin
-    // Create second user
-    // await createUser(UserRole.Admin, { email: 'admin@mail.com' });
-    // const accessToken: string = await createUserAndLoginAndGetAccessToken(
-    //   UserRole.Customer
-    // );
-
-    // // create category
-    // const categoryData = await createCategory(accessToken);
-
-    // pass access token to create a product
-    // const productResponse = await createProduct(
-    //   accessToken,
-    //   categoryData.body._id
-    // );
-
     const productResponse = await createProductAndCategoryWithAuth(
       UserRole.Customer
     );
@@ -125,22 +61,6 @@ describe('product controller test', () => {
   });
 
   it('should get a single product detail by id', async () => {
-    // create user, login user and get access token
-    // const accessToken: string = await createUserAndLoginAndGetAccessToken(
-    //   UserRole.Admin
-    // );
-
-    // // create category
-    // const categoryData = await createCategory(accessToken);
-
-    // // pass access token to create a product
-    // const productResponse = await createProduct(
-    //   accessToken,
-    //   categoryData.body._id
-    // );
-
-    // const product: ProductDocument = productResponse.body;
-
     const productResponse = await createProductAndCategoryWithAuth(
       UserRole.Admin
     );
@@ -159,7 +79,6 @@ describe('product controller test', () => {
       'description',
       productData.description
     );
-    // expect(productData).toEqual(singleProductData);
   });
 
   it('should update a product if user is admin', async () => {
@@ -170,22 +89,9 @@ describe('product controller test', () => {
 
     const productOriginalData = productOriginalResponse.body;
 
-    // console.log('product origin', productOriginalData);
-    // create user, login user and get access token
     const accessToken: string = await createUserAndLoginAndGetAccessToken(
       UserRole.Admin
     );
-
-    // create category
-    // const categoryData = await createCategory(accessToken);
-
-    // pass access token to create a product
-    // const productResponse = await createProduct(
-    //   accessToken,
-    //   categoryData.body._id
-    // );
-
-    // const productResponseData: ProductDocument = productResponse.body;
 
     const productUpdateData: Partial<Product> = {
       title: 'Product1 new name',
@@ -196,8 +102,6 @@ describe('product controller test', () => {
       .put(`/api/v1/products/${productOriginalData._id}`)
       .set('Authorization', 'Bearer ' + accessToken)
       .send(productUpdateData);
-
-    // console.log('product update response', productUpdateResponse.body);
 
     expect(productUpdateResponse.status).toBe(200);
     expect(productUpdateResponse.body).toMatchObject({

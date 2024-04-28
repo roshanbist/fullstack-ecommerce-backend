@@ -1,9 +1,8 @@
 # E-commerce API
 
-The project is a part of Integrify's Node.js backend module 2024.
+The backend module is a part of Fullstack project at Integrify 2024.
 
-We as a group, [Woong](https://github.com/Woongsik), [Roshan](https://github.com/roshanbist) and [Ganesh](https://github.com/ganesh-poudel),
-simulated E-commerce API and try to provide a good collection of REST APIs between users and server transactions.
+This backend encompasses collection of APIs aimed to meeth the diverse needs of Ecommerce application. From user and product mangement to order processing, these REST APIs offer seamless functionality for a better user experience. The data are stored in MongoDB database, ensuring security and reliability.
 
 Each entity basically have a CRUD(Create, Read, Update, Delete) operations but also a special access only for ADMIN.
 

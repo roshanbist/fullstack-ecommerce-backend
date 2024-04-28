@@ -13,11 +13,7 @@ const createUser = async (
   user: UserDocument,
   plainPasswordForGoogleLogin: string | null = null
 ): Promise<UserDocument | null> => {
-  // console.log('user', user);
   const newUser: UserDocument | null = await user.save();
-  // if (newUser) {
-  //   await sendWelcomeEmail(user, plainPasswordForGoogleLogin);
-  // }
 
   return newUser;
 };

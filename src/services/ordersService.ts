@@ -56,7 +56,6 @@ const deleteOrderById = async (
 export default {
   getAllOrders,
   getOrderyById,
-  // getMyOrders,
   createOrder,
   updateOrder,
   deleteOrderById,

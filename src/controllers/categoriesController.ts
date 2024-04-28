@@ -133,7 +133,6 @@ export const deleteCategory = async (
     const newCategory: CategoryDocument | null =
       await categoriesService.deleteCategoryById(categoryId);
     if (newCategory) {
-      // return res.status(204).json();
       return res.sendStatus(204);
     }
 

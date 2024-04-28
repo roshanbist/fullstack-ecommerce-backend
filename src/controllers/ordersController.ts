@@ -144,7 +144,6 @@ export const deleteOrder = async (
       await ordersService.deleteOrderById(orderId);
 
     if (deletedOrder) {
-      // return res.status(204).json();
       return res.sendStatus(204);
     }
 

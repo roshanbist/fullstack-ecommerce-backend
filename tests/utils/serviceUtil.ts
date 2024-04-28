@@ -32,7 +32,6 @@ export const createUserInService = async (
   role: UserRole = UserRole.Customer
 ): Promise<UserDocument> => {
   const userData: Partial<User> = getUserInfo(role);
-  // console.log('userinfo', userData);
   const newUser: UserDocument = new UserModel(userData);
   const newUserData = await usersService.createUser(newUser);
 

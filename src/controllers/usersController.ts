@@ -155,7 +155,6 @@ export const deleteuser = async (
   next: NextFunction
 ) => {
   try {
-    // const userPayload = request.user as UserDocument;
     const userId: string = request.params.userId;
 
     const deletedUser: UserDocument | null = await usersService.deleteUser(
@@ -312,12 +311,6 @@ export const updatePassword = async (
 ) => {
   try {
     const updateInfo: PasswordUpdate = request.body;
-    // const user: UserDocument | undefined = request.user as
-    //   | UserDocument
-    //   | undefined;
-    // if (!user) {
-    //   throw new ForbiddenError('User not found, please login');
-    // }
 
     const user: UserDocument = getUserDetail(request);
 

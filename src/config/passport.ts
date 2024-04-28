@@ -34,12 +34,6 @@ export const jwtStrategy: JwtStrategy = new JwtStrategy(
         return done(null, user);
       }
 
-      // let message = 'User is not existed';
-      // if (user && !user.active) {
-      //   message = 'User is inactive';
-      // }
-
-      // throw new NotFoundError(message);
       throw new NotFoundError('User is inactive');
     } catch (e) {
       done(e, false);

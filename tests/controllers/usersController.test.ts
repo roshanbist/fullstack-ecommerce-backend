@@ -2,7 +2,6 @@ import request from 'supertest';
 
 import connect, { MongoHelper } from '../db-helper';
 import app from '../../src/app';
-// import { createUser, createUserAndLoginAndGetAccessToken, login } from '../utils/testUtil';
 import {
   createUser,
   createUserAndLoginAndGetAccessToken,
@@ -11,7 +10,6 @@ import {
   user,
 } from '../utils/controllerUtil';
 import { UserRole, User } from '../../src/misc/types/User';
-import { userLogin } from '../../src/controllers/usersController';
 
 // tear down
 describe('user controller test', () => {
@@ -34,7 +32,6 @@ describe('user controller test', () => {
   // create user
   it('should create a user', async () => {
     const response = await createUser();
-    // console.log('response....', response.body);
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('_id');
     expect(response.body).toHaveProperty('firstname');
@@ -90,8 +87,6 @@ describe('user controller test', () => {
       .get(`/api/v1/users/${newUser.body._id}`)
       .set('Authorization', 'Bearer ' + accessToken);
 
-    // console.log('user login', response.status);
-
     expect(response.status).toBe(200);
     expect(response.body._id).toEqual(newUser.body._id);
     expect(response.body).toEqual(newUser.body);
@@ -107,7 +102,6 @@ describe('user controller test', () => {
 
     const loggedUser: User = response.body;
 
-    // console.log('logged user', loggedUser);
     expect(response.status).toBe(200);
     expect(loggedUser.email).toEqual(customerAuth.email);
   });
@@ -185,58 +179,4 @@ describe('user controller test', () => {
     expect(response.status).toBe(204);
     expect(response.body).toEqual({});
   });
-
-  // user login
-  // it('should return user based on email', async () => {
-  //   const createdNewUser = await login();
-  //   const { email, password } = createdNewUser.body;
-  //   const response = await request(app)
-  //     .post('/api/v1/users/login')
-  //     .send({ email, password });
-  //   expect(response.status).toBe(200);
-  //   expect(response.body).toMatchObject({
-  //     token: expect.any(String),
-  //     refreshToken: expect.any(String),
-  //   });
-  // });
-
-  // delete user
-  // it('should delete user when user is an admin and valid token', async () => {
-  //   const newUser = await createUser(UserRole.Admin);
-  //   const userlogin = await login();
-  //   const response = await request(app).delete(
-  //     `/api/v1/users/${newUser.body._id}`
-  //   );
-  //   expect(response.status).toBe(204);
-  //   expect(response.body).toEqual({});
-  // });
-
-  // it('should delete user when user  role is a customer and valid token', async () => {
-  //   const newUser = await createUser(UserRole.Customer);
-  //   const userlogin = await login();
-  //   const response = await request(app).delete(
-  //     `/api/v1/users/${newUser.body._id}`
-  //   );
-  //   expect(response.status).toBe(204);
-  //   expect(response.body).toEqual({});
-  // });
-
-  // update user
-  // it('should update user when user  role is an Admin and valid token', async () => {
-  //   const newUser = await createUser(UserRole.Admin);
-  //   const userlogin = await login();
-  //   const response = await request(app).put(
-  //     `/api/v1/users/${newUser.body._id}`
-  //   );
-  //   expect(response.status).toBe(200);
-  // });
-
-  // it('should update user when user  role is a customer and valid token', async () => {
-  //   const newUser = await createUser(UserRole.Customer);
-  //   const userlogin = await login();
-  //   const response = await request(app).put(
-  //     `/api/v1/users/${newUser.body._id}`
-  //   );
-  //   expect(response.status).toBe(200);
-  // });
 });

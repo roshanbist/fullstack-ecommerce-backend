@@ -1,21 +1,8 @@
-// import request from 'supertest';
 import connect, { MongoHelper } from '../db-helper';
-
-// import app from '../../src/app';
 import categoriesService from '../../src/services/categoriesService';
-import CategoryModel, { CategoryDocument } from '../../src/model/CategoryModel';
-// import { getCategoryData } from '../controllers/categoriesController.test';
-import { getCategoryData } from '../utils/controllerUtil';
-import { UserRole } from '../../src/misc/types/User';
+import { CategoryDocument } from '../../src/model/CategoryModel';
 import { Category } from '../../src/misc/types/Category';
 import { createCategoryInService } from '../utils/serviceUtil';
-
-// createCategory
-// export async function createCategory(): Promise<CategoryDocument> {
-//   const categoryData: Category = getCategoryData();
-//   const category: CategoryDocument = new CategoryModel(categoryData);
-//   return await categoriesService.createCategory(category);
-// }
 
 //tear down
 describe('category service test', () => {

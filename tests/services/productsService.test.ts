@@ -1,36 +1,9 @@
 import connect, { MongoHelper } from '../db-helper';
-import ProductModel, { ProductDocument } from '../../src/model/ProductModel';
+import { ProductDocument } from '../../src/model/ProductModel';
 import productsService from '../../src/services/productsService';
-// import { CategoryDocument } from '../../src/model/CategoryModel';
-// import { createCategory } from './categoriesService.test';
-// import {
-//   getProductData,
-//   productData,
-// } from '../controllers/productsController.test';
-import {
-  FilterProduct,
-  Product,
-  ProductsList,
-} from '../../src/misc/types/Product';
+
+import { Product, ProductsList } from '../../src/misc/types/Product';
 import { createProductInService } from '../utils/serviceUtil';
-
-// const filterProducts: Partial<FilterProduct> = {
-//   title: 'Product1',
-//   size: Size.Medium,
-// };
-
-// export async function createProduct(
-//   categoryId: string
-// ): Promise<ProductDocument> {
-//   const productDataObject = getProductData(productData, categoryId);
-//   const newProduct: ProductDocument = new ProductModel(productDataObject);
-//   return await productsService.createNewProduct(newProduct);
-// }
-
-// const filterProducts: Partial<FilterProduct> = {
-//   name: 'Product1',
-//   size: 'M',
-// };
 
 describe('Product service test', () => {
   let mongoHelper: MongoHelper;
@@ -53,14 +26,10 @@ describe('Product service test', () => {
   //test suites
   // get all products
   it('should get all products', async () => {
-    // create category
-    // const category: CategoryDocument = await createCategory();
-
     const product: ProductDocument = await createProductInService();
 
     const productList: ProductsList = await productsService.getAllProducts({});
 
-    // expect(productList.total).toEqual(1);
     expect(productList).toHaveProperty('products');
     expect(productList).toHaveProperty('total');
     expect(productList.total).toBe(1);
@@ -74,9 +43,6 @@ describe('Product service test', () => {
 
   // create product
   it('should create a product', async () => {
-    // create category
-    // const category: CategoryDocument = await createCategory();
-
     const product: ProductDocument = await createProductInService();
 
     expect(product).toHaveProperty('_id');
@@ -90,8 +56,6 @@ describe('Product service test', () => {
 
   // get a product by id
   it('should get a product by id', async () => {
-    // create category
-
     const product: ProductDocument = await createProductInService();
 
     const foundProduct: ProductDocument = await productsService.getProductById(
@@ -107,8 +71,6 @@ describe('Product service test', () => {
 
   // update product by id
   it('should update a product by id', async () => {
-    // create category
-
     const product: ProductDocument = await createProductInService();
 
     const productUpdateData: Partial<Product> = {

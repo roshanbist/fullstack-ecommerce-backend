@@ -17,11 +17,7 @@ export type User = UserActiveAndRole &
   UserAuth & {
     firstname: string;
     lastname: string;
-    // email: string;
-    // password: string;
     username: string;
     avatar: string;
     address: string;
-    // role: UserRole;
-    // active: boolean;
   };
