@@ -193,5 +193,10 @@ $ npm run test
 
 ## Deployment
 
-The API is live now hosted by RENDER.
-Check the live link here
+The API is live now hosted by [RENDER](https://render.com/)
+
+Check the live link here [https://fullstack-ecommerce-backend-sx23.onrender.com](https://fullstack-ecommerce-backend-sx23.onrender.com)
+Below are some of the example and for other feature it required authentication via register/login
+
+1. [All products](https://fullstack-ecommerce-backend-sx23.onrender.com/api/v1/products)
+2. [All categories](https://fullstack-ecommerce-backend-sx23.onrender.com/api/v1/categories)
