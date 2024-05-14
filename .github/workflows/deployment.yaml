@@ -1,0 +1,45 @@
+name: Backend CI/CD
+on:
+  push:
+    branches:
+      # if multiple branch -> branches: ['branch 1', 'branch 2']
+      - 'fullstackbackend'
+  pull_request:
+    branches:
+      - 'fullstackbackend'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      # Set up the environment
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16.x'
+
+      # Access the code in repo (here it's from github)
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get npm cache directory path
+        id: npm-cache-dir-path
+        run: echo "dir=$(npm cache dir)"
+
+      - name: Set up cache
+        uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Install package dependencies
+      - name: Install dependencies
+        run: npm install --frozen-lockfile #lock the version of used dependency package
+
+      # Tests
+      - name: Tests
+        run: npm test
