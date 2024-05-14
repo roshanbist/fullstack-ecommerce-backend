@@ -25,7 +25,7 @@ jobs:
         with:
           node-version: '16.x'
 
-      # Access the code in repo (here it's from github)
+      # Access the repo code (here it's from github)
       - name: Checkout code
         uses: actions/checkout@v4
 
