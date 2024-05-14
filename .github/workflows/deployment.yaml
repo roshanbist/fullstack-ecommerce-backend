@@ -12,6 +12,12 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+
+    env:
+      MONGODB_URL: ${{ secrets.MONGODB_URL }}
+      PORT: ${{ secrets.PORT }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
     steps:
       # Set up the environment
       - name: Setup Node.js environment
