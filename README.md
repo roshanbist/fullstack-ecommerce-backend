@@ -1,12 +1,12 @@
-# Fullstack E-commerce Backend
+# Backend Module for SHOPLYST
 
-This backend module is a part of Fullstack project at Integrify 2024. It encompasses collection of APIs aimed to meet the diverse needs of E-commerce web application. From user and product management to order processing, these REST APIs offer seamless functionality for a better user experience. The data are stored in MongoDB database, ensuring security and reliability. Each entity basically have a CRUD(Create, Read, Update, Delete) operations but also include an authorized access for ADMIN to manage every aspect of this module. Authentication is handled using JSON Web Tokens (JWT).
+This backend module is a part of SHOPLYST full-stack e-commerce project developed during learning program at Integrify 2024. It encompasses collection of RESTful APIs aimed to handle key features like user and product management, and admin control.
 
-This module is built with Typescript, Node, Express and MongoDB.
+This module uses TypeScript, Node.js, Express.js, and MongoDB for scalable, secure and reliable application development. Role-based authentication is implemented using JSON WEB TOKEN(JWT) to ensure secure access for users and admin.
 
 ## Table of Contents
 
-- [Fullstack E-commerce Backend](#fullstack-e-commerce-backend)
+- [Overview](#overview)
 - [Entity Relationship Diagram](#entity-relationship-diagram)
 - [Getting Started](#getting-started)
 - [Project Folder Structure](#project-folder-structure)
@@ -15,8 +15,17 @@ This module is built with Typescript, Node, Express and MongoDB.
 - [Testing](#testing)
 - [Deployment](#deployment)
 
+## Overview
+
+### Key Highlights
+
+- User-Friendly APIs: Designed for seamless integration with the Shoplyst frontend to provide an enhanced user experience.
+- Admin Privileges: Full control for administrators to manage products, categories, and orders.
+- Secure and Scalable: Built with MongoDB for reliable data storage and JWT for secure access.
+
 ## Entity Relationship Diagram
 
+The project adheres to a well-structured schema design, as illustrated below:
 ![ERD Diagram](./src/assets/images/ERD-ECOMMERCE.png)
 
 #### Entities
@@ -58,6 +67,8 @@ $ npm run start  # Compile and launch on local environment
 #### 3. Navigate to [http://localhost:{yourPortAdressForBackend}](http://localhost:8080)
 
 ## Project Folder Structure
+
+A clear folder structure ensures maintainability and scalability:
 
 ```
 └── 📁src
@@ -125,39 +136,33 @@ $ npm run start  # Compile and launch on local environment
     }
 ```
 
-## Authentication
-
-This REST API implement user authentication using JSON Web Tokens (JWT).
-
 ## Features
 
 1.  Products
 
-    - Get list of all products with/without pagination(limit, offset)
-    - Filtered the products by: title, categories, price range
-    - Get list of sorted products by title (ASC, DESC)
-    - Get details of a product by its product id
+    - View all products (with pagination support).
+    - Filtered the products by: title, categories, price range.
+    - Sort products by title (ASC, DESC).
+    - Fetch product details by ID.
 
 2.  Categories
 
-    - Get list of all categories
-    - Get a category by category id
+    - View all categories.
+    - Fetch category details by ID.
 
 3.  Users
 
-    - Sign up a new user (username, password, first name, last name, email, address)
-    - Sign in user with email/password
-    - Update user profile (first name, last name, email)
-    - Change password (username, old password, new password)
+    - Register a new user.
+    - Login with email and password.
+    - Update user profiles and change passwords.
 
 4.  Order
 
-    - Get list of all user's order
-    - Get a user's order by order ID
+    - Fetch list of all orders.
+    - Retrieve a specific order by order ID.
 
 5.  Admin
-    - Get CRUD operation of product
-    - Get CRUD operation of caetgory
+    - Manage (Create, Read, Update, Delete) products and categories.
 
 ## Testing
 
