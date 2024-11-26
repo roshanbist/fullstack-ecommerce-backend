@@ -1,8 +1,8 @@
 # Backend Module for SHOPLYST
 
-This backend module is a part of SHOPLYST full-stack e-commerce project developed during learning program at Integrify 2024. It encompasses collection of RESTful APIs aimed to handle key features like user and product management, and admin control.
+This backend module is part of the SHOPLYST full-stack e-commerce project, developed as a learning project during an internship at Integrify Academy in 2024. It includes a collection of RESTful APIs designed to manage key features like user accounts, product catalogs, and administrative controls.
 
-This module uses TypeScript, Node.js, Express.js, and MongoDB for scalable, secure and reliable application development. Role-based authentication is implemented using JSON WEB TOKEN(JWT) to ensure secure access for users and admin.
+The module is built with TypeScript, Node.js, Express.js, and MongoDB, ensuring scalability, security, and reliability. Role-based authentication is implemented using JSON Web Tokens (JWT) to provide secure access for users and administrators.
 
 ## Table of Contents
 
