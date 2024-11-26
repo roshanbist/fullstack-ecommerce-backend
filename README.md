@@ -1,6 +1,6 @@
 # Fullstack E-commerce Backend
 
-This backend module is a part of Fullstack project at Integrify 2024. It encompasses collection of APIs aimed to meeth the diverse needs of E-commerce application. From user and product management to order processing, these REST APIs offer seamless functionality for a better user experience. The data are stored in MongoDB database, ensuring security and reliability. Each entity basically have a CRUD(Create, Read, Update, Delete) operations but also an authorized access for ADMIN to manage every aspect of this module. Authentication is handled using JSON Web Tokens (JWT).
+This backend module is a part of Fullstack project at Integrify 2024. It encompasses collection of APIs aimed to meet the diverse needs of E-commerce web application. From user and product management to order processing, these REST APIs offer seamless functionality for a better user experience. The data are stored in MongoDB database, ensuring security and reliability. Each entity basically have a CRUD(Create, Read, Update, Delete) operations but also include an authorized access for ADMIN to manage every aspect of this module. Authentication is handled using JSON Web Tokens (JWT).
 
 This module is built with Typescript, Node, Express and MongoDB.
 
